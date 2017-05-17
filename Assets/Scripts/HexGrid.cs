@@ -6,10 +6,11 @@ public class HexGrid : MonoBehaviour {
 	public HexCell cellPrefab;
 	HexCell[] cells;
 
-	public static int gridRow = 15;
-	public static int gridColumn = 15;
-	[Range (0.0f,1.0f)]
-	public float initStart;
+	public static int gridRow = 30;
+	public static int gridColumn = 30;
+	public float initStart = 0.55f;
+	public float zoom = 0.3f;
+	public float shiftIndicator = 0.3f;
 	private int initLand = 0;
 	public int[,] gridList = new int[gridRow,gridColumn];
 	private string result;
@@ -23,21 +24,37 @@ public class HexGrid : MonoBehaviour {
 	}
 	
 	// Use this for initialization
-	void initRandom () {
-		for (int i=0; i< initLand; i++) {
+	void initRandom (int row, int column) {
+		
+		Vector2 shift = new Vector2(shiftIndicator,shiftIndicator); // play with this to shift map around
+		int offset = Random.Range (0, 1000);
+		for(int x = offset; x < (column+offset); x++)
+			for(int y = offset; y < (row+offset); y++)
+		{
+			Vector2 pos = zoom * (new Vector2(x,y)) + shift;
+			Vector2 pos2 = pos*4;
+			float noise = Mathf.PerlinNoise(pos.x, pos.y);
+			noise += (Mathf.PerlinNoise ((pos2.x), (pos2.y))-0.5f)/2.5f;
+			if (noise<(1-initStart)) gridList[(x-offset),(y-offset)] = 0;
+			else {
+				gridList[(x-offset),(y-offset)] = 1; // land
+				generateLand ((x-offset),(y-offset));
+			}
+		}
+		/*for (int i=0; i< initLand; i++) {
 			int x = Random.Range (0,gridRow);
 			int y = Random.Range (0,gridColumn);
 			if (gridList[x,y] == 1){
 				i -= 1;
 			}
 			generateLand(x,y);
-		} 
+		} */
 	}
 
 	void Awake () {
 		initLand = Mathf.RoundToInt(gridRow * gridColumn * initStart);
 		Debug.Log (initLand);
-		initRandom();
+		initRandom(gridRow,gridColumn);
 		cells = new HexCell[gridRow * gridColumn];
 
 		gridCanvas = GetComponentInChildren<Canvas>();
