@@ -1,35 +1,100 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class HexGrid : MonoBehaviour {
 
 	public HexCell cellPrefab;
 	HexCell[] cells;
-
-	public static int gridRow = 30;
-	public static int gridColumn = 30;
-	public float initStart = 0.55f;
-	public float zoom = 0.3f;
-	public float shiftIndicator = 0.3f;
-	private int initLand = 0;
-	public int[,] gridList = new int[gridRow,gridColumn];
 	private string result;
 	public HexMesh hexMesh;
 
+	//Grid Function Variable
+	public static int gridColumn = 30;
+	public static int gridRow = 30;
+	private int initLand = 0;
+
+	//Perlin Funcion Variable
+	public int[,] gridList = new int[gridRow,gridColumn];
+	public float initStart = 0.55f;
+	public float zoom = 0.3f;
+	public float shiftIndicator = 0.3f;
+
+	//Variable for Checking Island
+	List<int[,,]> islands; //x pos, y pos, and counter no
+	int landCounter = 0;
+	int[,] landList = new int[gridRow, gridColumn];
+
+	//Label Text on Hexagon
 	public Text cellLabelPrefab;
 	Canvas gridCanvas;
 
-	void generateLand(int heightLoc, int widthLoc) {
-		gridList[heightLoc, widthLoc] = 1; 
+	void generateLand(int heightLoc, int widthLoc, int counter) {
+	/*	int connections = 0;
+		if (heightLoc % 2 == 0) {
+			
+		} else {
+		
+		}*/
+		gridList[heightLoc, widthLoc] = counter+1; 
 	}
 	
+	//to declare an Island
+	string findLand(int row, int column,int landNo) {
+		int[] search = new int[] {1,1,1,1,1,1};
+
+
+		if (row == 0) {
+			search [2] = 0;
+			search [3] = 0;
+		}
+		if (column ==0) {
+			if (row%2 == 0 ) {
+				search [3] = 0;
+				search [4] = 0;
+				search [5] = 0;
+			} else {
+				search [4] = 0;
+			}
+		}
+		if (row == gridRow-1) {
+			search [0] = 0;
+			search [5] = 0;
+		}
+		if (column == gridColumn-1) {
+			if (row%2 == 0) {
+				search [1] = 0;
+			} else {
+				search [0] = 0;
+				search [1] = 0;
+				search [2] = 0;
+			}
+		}
+		string around = "";
+		around = (search [0].ToString() + " " + search [1].ToString() + " " + search [2].ToString() + " " + search [3].ToString() +
+			" " + search [4].ToString() + " " + search [5].ToString());
+		return around;
+	}
+
+	//to check island availability
+	void islandCheck (int row, int column) {
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < column; j++){
+				if (gridList[i,j] > 0 && landList[i,j] > 0) {
+					findLand(i,j,landCounter);
+					landCounter+=1;
+				}
+			}
+		}
+	}
+
 	// Use this for initialization
 	void initRandom (int row, int column) {
-		
+
 		Vector2 shift = new Vector2(shiftIndicator,shiftIndicator); // play with this to shift map around
 		int offset = Random.Range (0, 1000);
-		for(int x = offset; x < (column+offset); x++)
-			for(int y = offset; y < (row+offset); y++)
+		for(int x = offset; x < (row+offset); x++)
+			for(int y = offset; y < (column+offset); y++)
 		{
 			Vector2 pos = zoom * (new Vector2(x,y)) + shift;
 			Vector2 pos2 = pos*4;
@@ -37,8 +102,9 @@ public class HexGrid : MonoBehaviour {
 			noise += (Mathf.PerlinNoise ((pos2.x), (pos2.y))-0.5f)/2.5f;
 			if (noise<(1-initStart)) gridList[(x-offset),(y-offset)] = 0;
 			else {
-				gridList[(x-offset),(y-offset)] = 1; // land
-				generateLand ((x-offset),(y-offset));
+				generateLand ((x-offset),(y-offset),landCounter);
+				Debug.Log ((x-offset).ToString () + "   " + (y-offset).ToString ());
+				Debug.Log (findLand (x-offset,y-offset,landCounter));
 			}
 		}
 		/*for (int i=0; i< initLand; i++) {
@@ -55,13 +121,17 @@ public class HexGrid : MonoBehaviour {
 		initLand = Mathf.RoundToInt(gridRow * gridColumn * initStart);
 		Debug.Log (initLand);
 		initRandom(gridRow,gridColumn);
+
+		//Checking the Island
+		//islandCheck (gridRow,gridColumn);
+
 		cells = new HexCell[gridRow * gridColumn];
 
 		gridCanvas = GetComponentInChildren<Canvas>();
 		
 		for (int z = 0, i = 0; z < gridRow; z++) {
 			for (int x = 0; x < gridColumn; x++) {
-				if (gridList[z,x] == 1) {
+				if (gridList[z,x] >= 1) {
 					CreateCell(x, z, i++);
 				}
 			}
