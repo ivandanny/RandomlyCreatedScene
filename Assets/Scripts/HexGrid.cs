@@ -10,8 +10,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 30;
-	public static int gridRow = 30;
+	public static int gridColumn = 15;
+	public static int gridRow = 15;
 	private int initLand = 0;
 
 	//Perlin Funcion Variable
@@ -22,27 +22,21 @@ public class HexGrid : MonoBehaviour {
 
 	//Variable for Checking Island
 	List<int[,,]> islands; //x pos, y pos, and counter no
-	int landCounter = 0;
+	int landCounter = 1;
 	int[,] landList = new int[gridRow, gridColumn];
 
 	//Label Text on Hexagon
 	public Text cellLabelPrefab;
 	Canvas gridCanvas;
 
-	void generateLand(int heightLoc, int widthLoc, int counter) {
-	/*	int connections = 0;
-		if (heightLoc % 2 == 0) {
-			
-		} else {
-		
-		}*/
-		gridList[heightLoc, widthLoc] = counter+1; 
+	void generateLand(int heightLoc, int widthLoc) {
+		gridList[heightLoc, widthLoc] = 1; 
 	}
 	
 	//to declare an Island
-	string findLand(int row, int column,int landNo) {
+	void hexFind (int row, int column,int landNo) {
 		int[] search = new int[] {1,1,1,1,1,1};
-
+		int counter = 0;
 
 		if (row == 0) {
 			search [2] = 0;
@@ -70,23 +64,134 @@ public class HexGrid : MonoBehaviour {
 				search [2] = 0;
 			}
 		}
-		string around = "";
-		around = (search [0].ToString() + " " + search [1].ToString() + " " + search [2].ToString() + " " + search [3].ToString() +
-			" " + search [4].ToString() + " " + search [5].ToString());
-		return around;
-	}
+		Debug.Log (row.ToString () + ", " + column.ToString ());
 
-	//to check island availability
-	void islandCheck (int row, int column) {
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < column; j++){
-				if (gridList[i,j] > 0 && landList[i,j] > 0) {
-					findLand(i,j,landCounter);
-					landCounter+=1;
+		for (int i = 0; i < 6; i++) {
+			if (row %2 == 0 && search[i] == 1) {
+				switch (i) {
+				case 0:
+					if (landList[row+1,column] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row+1,column]);
+						landList[row,column] = landList[row+1,column];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 1:
+					if (landList[row,column+1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row,column+1]);
+						landList[row,column] = landList[row,column+1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 2:
+					if (landList[row-1,column] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row-1,column]);
+						landList[row,column] = landList[row-1,column];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 3:
+					if (landList[row-1,column-1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row-1,column-1]);
+						landList[row,column] = landList[row-1,column-1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 4:
+					if (landList[row,column-1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row,column-1]);
+						landList[row,column] = landList[row,column-1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 5:
+					if (landList[row+1,column-1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row+1,column-1]);
+						landList[row,column] = landList[row+1,column-1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				}
+			}
+			if (row %2 == 1 && search[i] == 1) {
+				switch (i) {
+				case 0:
+					if (landList[row+1,column+1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row+1,column+1]);
+						landList[row,column] = landList[row+1,column+1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 1:
+					if (landList[row,column+1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row,column+1]);
+						landList[row,column] = landList[row,column+1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 2:
+					if (landList[row-1,column+1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row-1,column+1]);
+						landList[row,column] = landList[row-1,column+1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 3:
+					if (landList[row-1,column] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row-1,column]);
+						landList[row,column] = landList[row-1,column];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 4:
+					if (landList[row,column-1] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row,column-1]);
+						landList[row,column] = landList[row,column-1];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
+				case 5:
+					if (landList[row+1,column] > 0 ) {
+						Debug.Log ("Check for:" + i + " Value = " + landList[row+1,column]);
+						landList[row,column] = landList[row+1,column];
+						Debug.Log ("Now = " + landList[row,column]);
+						counter++;
+					}
+					break;
 				}
 			}
 		}
+		Debug.Log ("LandCounter= " + landCounter + "   Counter= " + counter);
+		if (counter < 1){
+			landList [row, column] = landCounter;
+			Debug.Log ("Now = " + landList[row,column]);
+			//string res = search[0].ToString() + search[1].ToString() + search[2].ToString() + search[3].ToString() + search[4].ToString + search[5].ToString();
+			//Debug.Log (search[0]);
+			//Debug.Log (search[1]);
+			//Debug.Log (search[2]);
+			//Debug.Log (search[3]);
+			//Debug.Log (search[4]);
+			//Debug.Log (search[5]);
+			landCounter++;
+		}
+		Debug.Log (" ");
+//		string around = "";
+//		around = (search [0].ToString() + " " + search [1].ToString() + " " + search [2].ToString() + " " + search [3].ToString() +
+//			" " + search [4].ToString() + " " + search [5].ToString());
+//		Debug.Log (around);
 	}
+	
 
 	// Use this for initialization
 	void initRandom (int row, int column) {
@@ -102,9 +207,7 @@ public class HexGrid : MonoBehaviour {
 			noise += (Mathf.PerlinNoise ((pos2.x), (pos2.y))-0.5f)/2.5f;
 			if (noise<(1-initStart)) gridList[(x-offset),(y-offset)] = 0;
 			else {
-				generateLand ((x-offset),(y-offset),landCounter);
-				Debug.Log ((x-offset).ToString () + "   " + (y-offset).ToString ());
-				Debug.Log (findLand (x-offset,y-offset,landCounter));
+				generateLand ((x-offset),(y-offset));
 			}
 		}
 		/*for (int i=0; i< initLand; i++) {
@@ -119,11 +222,16 @@ public class HexGrid : MonoBehaviour {
 
 	void Awake () {
 		initLand = Mathf.RoundToInt(gridRow * gridColumn * initStart);
-		Debug.Log (initLand);
 		initRandom(gridRow,gridColumn);
 
 		//Checking the Island
-		//islandCheck (gridRow,gridColumn);
+		for (int i = 0; i < gridRow; i++) {
+			for (int j = 0; j < gridColumn; j++){
+				if (gridList[i,j] > 0) {
+					hexFind(i,j,landCounter);
+				}
+			}
+		}
 
 		cells = new HexCell[gridRow * gridColumn];
 
@@ -155,9 +263,9 @@ public class HexGrid : MonoBehaviour {
 
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
-		label.rectTransform.anchoredPosition =
-			new Vector2(position.x, position.z);
-		label.text = x.ToString() + "\n" + z.ToString();
+		label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
+		//label.text = landList[x,z].ToString();
+		label.text = z.ToString() + "\n" + x.ToString() + "\n" + landList[z,x].ToString();
 	}
 
 	
