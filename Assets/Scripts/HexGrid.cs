@@ -28,76 +28,77 @@ public class HexGrid : MonoBehaviour {
 	//Label Text on Hexagon
 	public Text cellLabelPrefab;
 	Canvas gridCanvas;
+	
 
-	void generateLand(int heightLoc, int widthLoc) {
-		gridList[heightLoc, widthLoc] = 1; 
+	//Check to prevent array out of Index
+	int[] indexCheck (int x, int y) {
+		int[] value = {1,1,1,1,1,1};
+		if (x == 0) {
+			value [2] = 0;
+			value [3] = 0;
+		}
+		if (y ==0) {
+			if (x%2 == 0 ) {
+				value [3] = 0;
+				value [4] = 0;
+				value [5] = 0;
+			} else {
+				value [4] = 0;
+			}
+		}
+		if (x == gridRow-1) {
+			value [0] = 0;
+			value [5] = 0;
+		}
+		if (y == gridColumn-1) {
+			if (x%2 == 0) {
+				value [1] = 0;
+			} else {
+				value [0] = 0;
+				value [1] = 0;
+				value [2] = 0;
+			}
+		}
+		return value;
 	}
 	
 	//to declare an Island
-	void hexFind (int row, int column) {
-		int[] search = new int[] {1,1,1,1,1,1};
+	void islandTag (int row, int column, int counter) {
 
-		if (row == 0) {
-			search [2] = 0;
-			search [3] = 0;
-		}
-		if (column ==0) {
-			if (row%2 == 0 ) {
-				search [3] = 0;
-				search [4] = 0;
-				search [5] = 0;
-			} else {
-				search [4] = 0;
-			}
-		}
-		if (row == gridRow-1) {
-			search [0] = 0;
-			search [5] = 0;
-		}
-		if (column == gridColumn-1) {
-			if (row%2 == 0) {
-				search [1] = 0;
-			} else {
-				search [0] = 0;
-				search [1] = 0;
-				search [2] = 0;
-			}
-		}
-		Debug.Log (row.ToString () + ", " + column.ToString ());
-
-		landList [row, column] = landCounter;
-
+		initLand = Mathf.RoundToInt (gridRow * gridColumn * initStart);
+		landList [row, column] = counter;
+		int[] search = indexCheck (row, column);
 		for (int i = 0; i < 6; i++) {
 			if (row %2 == 0 && search[i] == 1) {
 				switch (i) {
 				case 0:
-					if (landList[row+1,column] == 0 && gridList[row+1,column] == 1 ) {
-						hexFind(row+1,column);
+					if (landList[row+1,column] != counter && gridList[row+1,column] == 1 ) {
+						islandTag(row+1,column,counter);
 					}
 					break;
 				case 1:
-					if (landList[row,column+1] == 0 && gridList[row,column+1] == 1 ) {
-						hexFind(row,column+1);
+					if (landList[row,column+1] != counter && gridList[row,column+1] == 1 ) {
+						islandTag(row,column+1,counter);
 					}
 					break;
 				case 2:
-					if (landList[row-1,column] == 0 && gridList[row-1,column] == 1 ) {
-						hexFind(row-1,column);
+					if (landList[row-1,column] != counter && gridList[row-1,column] == 1 ) {
+						islandTag(row-1,column,counter);
 					}
 					break;
 				case 3:
-					if (landList[row-1,column-1] == 0 && gridList[row-1,column-1] == 1 ) {
-						hexFind(row-1,column-1);
+					if (landList[row-1,column-1] != counter && gridList[row-1,column-1] == 1 ) {
+						islandTag(row-1,column-1,counter);
 					}
 					break;
 				case 4:
-					if (landList[row,column-1] == 0 && gridList[row,column-1] == 1 ) {
-						hexFind(row,column-1);
+					if (landList[row,column-1] != counter && gridList[row,column-1] == 1 ) {
+						islandTag(row,column-1,counter);
 					}
 					break;
 				case 5:
-					if (landList[row+1,column-1] == 0 && gridList[row+1,column-1] == 1 ) {
-						hexFind(row+1,column-1);
+					if (landList[row+1,column-1] != counter && gridList[row+1,column-1] == 1 ) {
+						islandTag(row+1,column-1,counter);
 					}
 					break;
 				}
@@ -105,39 +106,38 @@ public class HexGrid : MonoBehaviour {
 			if (row %2 == 1 && search[i] == 1) {
 				switch (i) {
 				case 0:
-					if (landList[row+1,column+1] == 0 && gridList[row+1,column+1] == 1 ) {
-						hexFind(row+1,column+1);
+					if (landList[row+1,column+1] != counter && gridList[row+1,column+1] == 1 ) {
+						islandTag(row+1,column+1,counter);
 					}
 					break;
 				case 1:
-					if (landList[row,column+1] == 0 && gridList[row,column+1] == 1 ) {
-						hexFind(row,column+1);
+					if (landList[row,column+1] != counter && gridList[row,column+1] == 1 ) {
+						islandTag(row,column+1,counter);
 					}
 					break;
 				case 2:
-					if (landList[row-1,column+1] == 0 && gridList[row-1,column+1] == 1 ) {
-						hexFind(row-1,column);
+					if (landList[row-1,column+1] != counter && gridList[row-1,column+1] == 1 ) {
+						islandTag(row-1,column,counter);
 					}
 					break;
 				case 3:
-					if (landList[row-1,column] == 0 && gridList[row-1,column] == 1 ) {
-						hexFind(row-1,column);
+					if (landList[row-1,column] != counter && gridList[row-1,column] == 1 ) {
+						islandTag(row-1,column,counter);
 					}
 					break;
 				case 4:
-					if (landList[row,column-1] == 0 && gridList[row,column-1] == 1 ) {
-						hexFind(row,column-1);
+					if (landList[row,column-1] != counter && gridList[row,column-1] == 1 ) {
+						islandTag(row,column-1,counter);
 					}
 					break;
 				case 5:
-					if (landList[row+1,column] == 0 && gridList[row+1,column] == 1 ) {
-						hexFind(row+1,column);
+					if (landList[row+1,column] != counter && gridList[row+1,column] == 1 ) {
+						islandTag(row+1,column,counter);
 					}
 					break;
 				}
 			}
 		}
-		Debug.Log ("LandCounter= " + landCounter);
 	}
 	
 
@@ -145,7 +145,7 @@ public class HexGrid : MonoBehaviour {
 	void initRandom (int row, int column) {
 
 		Vector2 shift = new Vector2(shiftIndicator,shiftIndicator); // play with this to shift map around
-		int offset = Random.Range (0, 1000);
+		int offset = Random.Range (0, 10000);
 		for(int x = offset; x < (row+offset); x++)
 			for(int y = offset; y < (column+offset); y++)
 		{
@@ -155,24 +155,27 @@ public class HexGrid : MonoBehaviour {
 			noise += (Mathf.PerlinNoise ((pos2.x), (pos2.y))-0.5f)/2.5f;
 			if (noise<(1-initStart)) gridList[(x-offset),(y-offset)] = 0;
 			else {
-				generateLand ((x-offset),(y-offset));
+				gridList[x-offset, y-offset] = 1; 
 			}
 		}
 	}
+	
 
 	void Awake () {
-		initLand = Mathf.RoundToInt(gridRow * gridColumn * initStart);
+		bool checkCon = false;
 		initRandom(gridRow,gridColumn);
+
 
 		//Checking the Island
 		for (int i = 0; i < gridRow; i++) {
 			for (int j = 0; j < gridColumn; j++){
 				if (gridList[i,j] > 0 && landList[i,j] == 0) {
 					landCounter++;
-					hexFind(i,j);
+					islandTag(i,j,landCounter);
 				}
 			}
 		}
+	
 
 		cells = new HexCell[gridRow * gridColumn];
 
