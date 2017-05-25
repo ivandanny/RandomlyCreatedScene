@@ -10,9 +10,13 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 30;
-	public static int gridRow = 30;
+	public static int gridColumn = 15;
+	public static int gridRow = 15;
 	private int initLand = 0;
+
+	// Connecting the Island
+	int[,] conList = new int[gridRow,gridColumn];
+	int radius = 0;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
@@ -28,71 +32,124 @@ public class HexGrid : MonoBehaviour {
 	//Label Text on Hexagon
 	public Text cellLabelPrefab;
 	Canvas gridCanvas;
+	
 
-	void generateLand(int heightLoc, int widthLoc, int counter) {
-	/*	int connections = 0;
-		if (heightLoc % 2 == 0) {
-			
-		} else {
-		
-		}*/
-		gridList[heightLoc, widthLoc] = counter+1; 
+	//Check to prevent array out of Index
+	int[] indexCheck (int x, int y) {
+		int[] value = {1,1,1,1,1,1};
+		if (x == 0) {
+			value [2] = 0;
+			value [3] = 0;
+		}
+		if (y ==0) {
+			if (x%2 == 0 ) {
+				value [3] = 0;
+				value [4] = 0;
+				value [5] = 0;
+			} else {
+				value [4] = 0;
+			}
+		}
+		if (x == gridRow-1) {
+			value [0] = 0;
+			value [5] = 0;
+		}
+		if (y == gridColumn-1) {
+			if (x%2 == 0) {
+				value [1] = 0;
+			} else {
+				value [0] = 0;
+				value [1] = 0;
+				value [2] = 0;
+			}
+		}
+		return value;
 	}
 	
 	//to declare an Island
-	string findLand(int row, int column,int landNo) {
-		int[] search = new int[] {1,1,1,1,1,1};
+	void islandTag (int row, int column, int counter) {
 
-
-		if (row == 0) {
-			search [2] = 0;
-			search [3] = 0;
-		}
-		if (column ==0) {
-			if (row%2 == 0 ) {
-				search [3] = 0;
-				search [4] = 0;
-				search [5] = 0;
-			} else {
-				search [4] = 0;
+		initLand = Mathf.RoundToInt (gridRow * gridColumn * initStart);
+		landList [row, column] = counter;
+		int[] search = indexCheck (row, column);
+		for (int i = 0; i < 6; i++) {
+			if (row %2 == 0 && search[i] == 1) {
+				switch (i) {
+				case 0:
+					if (landList[row+1,column] != counter && gridList[row+1,column] == 1 ) {
+						islandTag(row+1,column,counter);
+					}
+					break;
+				case 1:
+					if (landList[row,column+1] != counter && gridList[row,column+1] == 1 ) {
+						islandTag(row,column+1,counter);
+					}
+					break;
+				case 2:
+					if (landList[row-1,column] != counter && gridList[row-1,column] == 1 ) {
+						islandTag(row-1,column,counter);
+					}
+					break;
+				case 3:
+					if (landList[row-1,column-1] != counter && gridList[row-1,column-1] == 1 ) {
+						islandTag(row-1,column-1,counter);
+					}
+					break;
+				case 4:
+					if (landList[row,column-1] != counter && gridList[row,column-1] == 1 ) {
+						islandTag(row,column-1,counter);
+					}
+					break;
+				case 5:
+					if (landList[row+1,column-1] != counter && gridList[row+1,column-1] == 1 ) {
+						islandTag(row+1,column-1,counter);
+					}
+					break;
+				}
 			}
-		}
-		if (row == gridRow-1) {
-			search [0] = 0;
-			search [5] = 0;
-		}
-		if (column == gridColumn-1) {
-			if (row%2 == 0) {
-				search [1] = 0;
-			} else {
-				search [0] = 0;
-				search [1] = 0;
-				search [2] = 0;
-			}
-		}
-		string around = "";
-		around = (search [0].ToString() + " " + search [1].ToString() + " " + search [2].ToString() + " " + search [3].ToString() +
-			" " + search [4].ToString() + " " + search [5].ToString());
-		return around;
-	}
-
-	//to check island availability
-	void islandCheck (int row, int column) {
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < column; j++){
-				if (gridList[i,j] > 0 && landList[i,j] > 0) {
-					findLand(i,j,landCounter);
-					landCounter+=1;
+			if (row %2 == 1 && search[i] == 1) {
+				switch (i) {
+				case 0:
+					if (landList[row+1,column+1] != counter && gridList[row+1,column+1] == 1 ) {
+						islandTag(row+1,column+1,counter);
+					}
+					break;
+				case 1:
+					if (landList[row,column+1] != counter && gridList[row,column+1] == 1 ) {
+						islandTag(row,column+1,counter);
+					}
+					break;
+				case 2:
+					if (landList[row-1,column+1] != counter && gridList[row-1,column+1] == 1 ) {
+						islandTag(row-1,column,counter);
+					}
+					break;
+				case 3:
+					if (landList[row-1,column] != counter && gridList[row-1,column] == 1 ) {
+						islandTag(row-1,column,counter);
+					}
+					break;
+				case 4:
+					if (landList[row,column-1] != counter && gridList[row,column-1] == 1 ) {
+						islandTag(row,column-1,counter);
+					}
+					break;
+				case 5:
+					if (landList[row+1,column] != counter && gridList[row+1,column] == 1 ) {
+						islandTag(row+1,column,counter);
+					}
+					break;
 				}
 			}
 		}
 	}
+	
 
-	// Use this for initialization
+	// Using Perlin function, randomly allocate the Islands
 	void initRandom (int row, int column) {
 
 		Vector2 shift = new Vector2(shiftIndicator,shiftIndicator); // play with this to shift map around
-		int offset = Random.Range (0, 1000);
+		int offset = Random.Range (0, 10000);
 		for(int x = offset; x < (row+offset); x++)
 			for(int y = offset; y < (column+offset); y++)
 		{
@@ -102,28 +159,259 @@ public class HexGrid : MonoBehaviour {
 			noise += (Mathf.PerlinNoise ((pos2.x), (pos2.y))-0.5f)/2.5f;
 			if (noise<(1-initStart)) gridList[(x-offset),(y-offset)] = 0;
 			else {
-				generateLand ((x-offset),(y-offset),landCounter);
-				Debug.Log ((x-offset).ToString () + "   " + (y-offset).ToString ());
-				Debug.Log (findLand (x-offset,y-offset,landCounter));
+				gridList[x-offset, y-offset] = 1; 
 			}
 		}
-		/*for (int i=0; i< initLand; i++) {
-			int x = Random.Range (0,gridRow);
-			int y = Random.Range (0,gridColumn);
-			if (gridList[x,y] == 1){
-				i -= 1;
+	}
+
+	//iteration to find the connecting island
+	void findCon ( int row, int column, int depth) {
+		int[] search = indexCheck (row, column);
+		foreach (int i in search) {
+			if (i != 0) {
+				if (row %2 == 0 && search[i] == 1) {
+					switch (i) {
+					case 0:
+						if (landList [row + 1, column] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row + 1, column] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row + 1, column] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 1:
+						if (landList [row, column+1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row, column + 1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row, column + 1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 2:
+						if (landList [row - 1, column] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row - 1, column] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row - 1, column] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 3:
+						if (landList [row - 1, column-1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row - 1, column-1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row - 1, column-1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 4:
+						if (landList [row, column-1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row, column - 1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row, column - 1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 5:
+						if (landList [row+1, column-1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row+1, column - 1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row+1, column - 1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					}
+				}
+				if (row %2 == 1 && search[i] == 1) {
+					switch (i) {
+					case 0:
+						if (landList [row + 1, column + 1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row + 1, column + 1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row + 1, column + 1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 1:
+						if (landList [row, column+1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row, column + 1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row, column + 1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 2:
+						if (landList [row - 1, column+1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row - 1, column+1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row - 1, column+1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 3:
+						if (landList [row - 1, column] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row - 1, column] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row - 1, column] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 4:
+						if (landList [row, column-1] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row, column - 1] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row, column - 1] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					case 5:
+						if (landList [row + 1, column] == 1 && depth == 1) {
+							gridList [row, column] = 1;
+							return;
+						} else {
+							if (landList [row + 1, column] > 1) {
+								islandTag (row, column, 1);
+								landCounter -= 1;
+								return;
+							} else {
+								if (conList [row + 1, column] == (depth - 1)) {
+									conList [row, column] = depth;
+								}
+							}
+						}
+						break;
+					}
+				}
 			}
-			generateLand(x,y);
-		} */
+		}
 	}
 
 	void Awake () {
-		initLand = Mathf.RoundToInt(gridRow * gridColumn * initStart);
-		Debug.Log (initLand);
+		bool checkCon = false;
 		initRandom(gridRow,gridColumn);
-
+		int[] firstPoint = { 0, 0 };
 		//Checking the Island
-		//islandCheck (gridRow,gridColumn);
+		for (int i = 0; i < gridRow; i++) {
+			for (int j = 0; j < gridColumn; j++){
+				if (gridList[i,j] > 0 && landList[i,j] == 0) {
+					landCounter++;
+					if (landCounter == 1) {
+						firstPoint [0] = i;
+						firstPoint [1] = j;
+					}
+					islandTag(i,j,landCounter);
+				}
+			}
+		}
+
+		bool check = false;
+		while (landCounter > 1) {
+			radius += 1;
+			for (int i = 0; i < gridRow; i++) {
+				for (int j = 0; j < gridRow; j++) {
+					if (gridList [i, j] == 0) {
+						findCon (i, j, radius);
+						if (gridList [i, j] == 1) {
+							check = true;
+							break;
+						}
+					}
+				}
+				if (check == true)
+					break;
+			}
+			if (check == true) {
+				radius = 0;
+				check = false;
+			}
+		}
 
 		cells = new HexCell[gridRow * gridColumn];
 
@@ -155,9 +443,9 @@ public class HexGrid : MonoBehaviour {
 
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
-		label.rectTransform.anchoredPosition =
-			new Vector2(position.x, position.z);
-		label.text = x.ToString() + "\n" + z.ToString();
+		label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
+		//label.text = landList[x,z].ToString();
+		label.text = z.ToString() + "\n" + x.ToString() + "\n" + landList[z,x].ToString();
 	}
 
 	
