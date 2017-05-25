@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
@@ -390,9 +390,10 @@ public class HexGrid : MonoBehaviour {
 				}
 			}
 		}
-
+		/*
 		bool check = false;
-		while (landCounter > 1) {
+		int run = 0;
+		while (landCounter > 1 && run != 6) {
 			radius += 1;
 			for (int i = 0; i < gridRow; i++) {
 				for (int j = 0; j < gridRow; j++) {
@@ -411,7 +412,10 @@ public class HexGrid : MonoBehaviour {
 				radius = 0;
 				check = false;
 			}
-		}
+			run += 1;
+		}*/
+
+		Debug.Log (landCounter);
 
 		cells = new HexCell[gridRow * gridColumn];
 

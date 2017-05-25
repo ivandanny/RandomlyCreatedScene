@@ -1,7 +1,7 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{549F8433-5264-0564-AC6E-40831600424E}") = "RandomlyCreatedScene", "Assembly-CSharp.csproj", "{01304154-7AF2-43FD-5A6C-8DFE6A883707}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomlyCreatedScene", "Assembly-CSharp.csproj", "{01304154-7AF2-43FD-5A6C-8DFE6A883707}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +36,4 @@ Global
 		$3.inheritsScope = text/plain
 		$3.scope = text/plain
 	EndGlobalSection
-
 EndGlobal
