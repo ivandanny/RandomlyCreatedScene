@@ -32,7 +32,8 @@ public class HexGrid : MonoBehaviour {
 	//Label Text on Hexagon
 	public Text cellLabelPrefab;
 	Canvas gridCanvas;
-	
+
+	bool quit = false;
 
 	//Check to prevent array out of Index
 	int[] indexCheck (int x, int y) {
@@ -71,6 +72,7 @@ public class HexGrid : MonoBehaviour {
 
 		initLand = Mathf.RoundToInt (gridRow * gridColumn * initStart);
 		landList [row, column] = counter;
+		conList [row, column] = 0;
 		int[] search = indexCheck (row, column);
 		for (int i = 0; i < 6; i++) {
 			if (row %2 == 0 && search[i] == 1) {
@@ -164,107 +166,76 @@ public class HexGrid : MonoBehaviour {
 		}
 	}
 
+	void linkIsland(int row, int col, int[] search) {
+		
+	}
+
+	void findRel (int row, int col, int row2, int col2, int depth, int[] search) {
+		if (landList [row2, col2] == 1 && depth == 1) {
+			conList [row, col] = 1;
+			quit = true;
+		} else {
+			if (landList [row2, col2] > 1) {
+				//linkIsland (row, col,search);
+				islandTag (row2, col2, 1);
+				landCounter -= 1;
+				conList [row, col] = 1;
+				quit = true;
+			} else {
+				if (conList [row2, col2] == (depth - 1) && depth != 1) {
+					conList [row, col] = depth;
+				}
+			}
+		}
+	}
 	//iteration to find the connecting island
 	void findCon ( int row, int column, int depth) {
 		int[] search = indexCheck (row, column);
-		foreach (int i in search) {
+		bool check = false;
+		for (int i = 0; i < 6; i++) {
 			if (i != 0) {
 				if (row %2 == 0 && search[i] == 1) {
 					switch (i) {
 					case 0:
-						if (landList [row + 1, column] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row + 1, column, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row + 1, column] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row + 1, column] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 1:
-						if (landList [row, column+1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row, column + 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row, column + 1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row, column + 1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 2:
-						if (landList [row - 1, column] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row - 1, column, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row - 1, column] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row - 1, column] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 3:
-						if (landList [row - 1, column-1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row - 1, column - 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row - 1, column-1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row - 1, column-1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 4:
-						if (landList [row, column-1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row, column - 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row, column - 1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row, column - 1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 5:
-						if (landList [row+1, column-1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row + 1, column - 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row+1, column - 1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row+1, column - 1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					}
@@ -272,99 +243,45 @@ public class HexGrid : MonoBehaviour {
 				if (row %2 == 1 && search[i] == 1) {
 					switch (i) {
 					case 0:
-						if (landList [row + 1, column + 1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row + 1, column + 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row + 1, column + 1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row + 1, column + 1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 1:
-						if (landList [row, column+1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row, column + 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row, column + 1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row, column + 1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 2:
-						if (landList [row - 1, column+1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row - 1, column + 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row - 1, column+1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row - 1, column+1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 3:
-						if (landList [row - 1, column] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row - 1, column, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row - 1, column] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row - 1, column] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 4:
-						if (landList [row, column-1] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row, column - 1, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row, column - 1] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row, column - 1] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					case 5:
-						if (landList [row + 1, column] == 1 && depth == 1) {
-							gridList [row, column] = 1;
+						findRel (row, column, row + 1, column, depth, search);
+						if (quit = true) {
+							quit = false;
 							return;
-						} else {
-							if (landList [row + 1, column] > 1) {
-								islandTag (row, column, 1);
-								landCounter -= 1;
-								return;
-							} else {
-								if (conList [row + 1, column] == (depth - 1)) {
-									conList [row, column] = depth;
-								}
-							}
 						}
 						break;
 					}
@@ -390,13 +307,19 @@ public class HexGrid : MonoBehaviour {
 				}
 			}
 		}
-		/*
+		string debugLand = "";
 		bool check = false;
 		int run = 0;
-		while (landCounter > 1 && run != 6) {
+
+		landCounter = 1;
+		while (landCounter > 0) {
 			radius += 1;
+			if (landCounter == 1) {
+				landCounter--;
+			}
+			conList = new int[gridRow, gridColumn];
 			for (int i = 0; i < gridRow; i++) {
-				for (int j = 0; j < gridRow; j++) {
+				for (int j = 0; j < gridColumn; j++) {
 					if (gridList [i, j] == 0) {
 						findCon (i, j, radius);
 						if (gridList [i, j] == 1) {
@@ -404,6 +327,7 @@ public class HexGrid : MonoBehaviour {
 							break;
 						}
 					}
+					debugLand += conList [i, j] + ", ";
 				}
 				if (check == true)
 					break;
@@ -412,7 +336,23 @@ public class HexGrid : MonoBehaviour {
 				radius = 0;
 				check = false;
 			}
-			run += 1;
+		}
+
+		for (int i = (gridRow - 1); i >= 0; i--) {
+			debugLand = "";
+			for (int j = 0; j < gridColumn; j++) {
+				debugLand += conList [i, j] + ",";
+			}
+			Debug.Log (debugLand);
+		}
+		/*
+		Debug.Log ("land List");
+		for (int i = (gridRow - 1); i >= 0; i--) {
+			debugLand = "";
+			for (int j = 0; j < gridColumn; j++) {
+				debugLand += landList [i, j] + ",";
+			}
+			Debug.Log (debugLand);
 		}*/
 
 		Debug.Log (landCounter);
@@ -424,7 +364,7 @@ public class HexGrid : MonoBehaviour {
 		for (int z = 0, i = 0; z < gridRow; z++) {
 			for (int x = 0; x < gridColumn; x++) {
 				if (gridList[z,x] >= 1) {
-					CreateCell(x, z, i++);
+					CreateCell(x, z, i++);	
 				}
 			}
 		}
