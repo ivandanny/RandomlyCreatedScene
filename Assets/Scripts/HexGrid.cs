@@ -10,14 +10,9 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 12;
-	public static int gridRow = 15;
-	private int initLand = 0;
+	public static int gridColumn = 30;
+	public static int gridRow = 30;
 	int[] landCount = new int[gridRow*gridColumn/3];
-
-	// Connecting the Island
-	int[,] conList = new int[gridRow,gridColumn];
-	int radius = 0;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
@@ -98,7 +93,6 @@ public class HexGrid : MonoBehaviour {
 		if (selected == 1) {
 			selectedIslands.Add (new SelectedIslands(row, column,1));
 		}
-		initLand = Mathf.RoundToInt (gridRow * gridColumn * initStart);
 		landList [row, column] = counter;
 		landCount [counter-1]++;
 		int[] search = indexCheck (row, column);
@@ -216,7 +210,7 @@ public class HexGrid : MonoBehaviour {
 		corner [1] = maxX;
 		corner [2] = minY;
 		corner [3] = maxY;
-
+		Debug.Log ("FindMax: " + corner [0] + ", " + corner [1] + ", " + corner [2] + ", " + corner [3]);
 		return (corner);
 	}
 
@@ -228,49 +222,83 @@ public class HexGrid : MonoBehaviour {
 		int y = selectedIslands [0].YPos;
 		border = findMax (border);
 
-		while (border [1] < (gridRow-1)) {
+		while (border [1] < (gridRow-1) || canMove == false) {
+			canMove = true;
 			//Go Right
-			while (border [3] < (gridColumn -2)) {
-				canMove = true;
+			while (border [3] < (gridColumn - 2)) {
+				Debug.Log ("Right + 1");
 				for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 					selectedIslands [cnt].YPos += 1;
 					x = selectedIslands [cnt].XPos;
 					y = selectedIslands [cnt].YPos;
-					if (y + 2 < gridColumn) {
-						if (gridList [x, y + 1] == 1 && landList [x, y + 1] != 1) {
-							islandTag (x, y + 1, 1, 1);
-							border = findMax (border);
-							canMove = false;
+					//Debug.Log ("Right  : " + x + ", " + y);
+					if (y + 1 < gridColumn) {
+						if (gridList [x, y] == 1 && landList [x, y] != 1) {
+							Debug.Log ("Found Right" + landList [x, y]);
+							islandTag (x, y, 1, 1);
 						}
 					}
 				}
-				if (canMove == true) {
-					border [2]++;
-					border [3]++;
+				border = findMax (border);
+				if (border[1] >= gridRow) {
+					for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
+						selectedIslands [cnt].YPos -= 1;
+					}
+					border [0]--;
+					border [1]--;
 				}
 			}
 			//Go Left
 			while (border [2] > 0) {
-				canMove = true;
-				for(int cnt = 0 ; cnt < selectedIslands.Count; cnt++) {
+				Debug.Log ("Left + 1");
+				for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 					selectedIslands [cnt].YPos -= 1;
 					x = selectedIslands [cnt].XPos;
 					y = selectedIslands [cnt].YPos;
-					if (y - 1 != 0) {
-						if (gridList [x, y - 1] == 1 && landList [x, y - 1] != 1) {
-							islandTag (x, y - 1, 1, 1);
-							canMove = false;
-							border = findMax (border);
+					//Debug.Log ("Left  : " + x + ", " + y);
+					if (y > 0) {
+						if (gridList [x, y] == 1 && landList [x, y] != 1) {
+							Debug.Log ("Found Left" + landList [x, y]);
+							islandTag (x, y, 1, 1);
 						}
 					}
 				}
-				if (canMove == true) {
-					border [2]--;
-					border [3]--;
+				border = findMax (border);
+				if (border[2] < 0) {
+					for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
+						selectedIslands [cnt].YPos += 1;
+					}
+					border [2]++;
+					border [3]++;
 				}
 			}
+
 			//Go Up
-			border[1] = gridRow;
+			if (border [1] < gridRow - 2) {
+				Debug.Log ("UP + 1");
+				for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
+					selectedIslands [cnt].XPos += 2;
+					x = selectedIslands [cnt].XPos;
+					y = selectedIslands [cnt].YPos;
+					//Debug.Log ("UP  : " + x + ", " + y);
+					if (x + 2 < gridRow) {
+						if (gridList [x, y] == 1 && landList [x, y] != 1) {
+							Debug.Log ("Found Up" + landList [x, y]);
+							islandTag (x, y, 1, 1);
+						}
+					}
+				}
+			}
+			border = findMax (border);
+
+			if (border[1] > gridRow-2) {
+				for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
+					selectedIslands [cnt].XPos -= 2;
+				}
+				border [0]-= 2;
+				border [1]-= 2;
+				break;
+			}
 		}
 	}
 
@@ -299,16 +327,14 @@ public class HexGrid : MonoBehaviour {
 		combineIslands();
 			
 		//Debug Log on Islands
-		/*
-		Debug.Log (landCounter);
-		Debug.Log (islands);
-		for(int cnt = 0; cnt < islands.Count; cnt++) {
-			Debug.Log("X: " + islands[cnt].XPos + "  Y:" + islands[cnt].YPos + "  No:" + islands[cnt].No);
-		}
-		//for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
-		//	Debug.Log("X: " + selectedIslands[cnt].XPos + "  Y:" + selectedIslands[cnt].YPos + "  No:" + selectedIslands[cnt].No);
-		//}
-		*/	
+
+		//for(int cnt = 0; cnt < islands.Count; cnt++) {
+	//		Debug.Log("X: " + islands[cnt].XPos + "  Y:" + islands[cnt].YPos + "  No:" + islands[cnt].No);
+	//	}
+		/*for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
+			Debug.Log("X: " + selectedIslands[cnt].XPos + "  Y:" + selectedIslands[cnt].YPos + "  No:" + selectedIslands[cnt].No);
+		}*/
+			
 
 		//Creating the Cells
 		for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
@@ -340,80 +366,3 @@ public class HexGrid : MonoBehaviour {
 
 	
 }
-
-
-/*
-	void findRel (int row, int col, int row2, int col2, int depth, int[] search) {
-		if (landList [row2, col2] == 1 && depth == 1) {
-			conList [row, col] = 1;
-			quit = true;
-		} else {
-			if (landList [row2, col2] > 1) {
-				//linkIsland (row, col,search);
-				islandTag (row2, col2, 1);
-				landCounter -= 1;
-				conList [row, col] = 1;
-				quit = true;
-			} else {
-				if (conList [row2, col2] == (depth - 1) && depth != 1) {
-					conList [row, col] = depth;
-				}
-			}
-		}
-	}
-
-	//iteration to find the connecting island
-	void findCon ( int row, int column, int depth) {
-		int[] search = indexCheck (row, column);
-		bool check = false;
-		for (int i = 0; i < 6; i++) {
-			if (i != 0) {
-				if (row %2 == 0 && search[i] == 1) {
-					switch (i) {
-					case 0:
-						findRel (row, column, row + 1, column, depth, search);
-						break;
-					case 1:
-						findRel (row, column, row, column + 1, depth, search);
-						break;
-					case 2:
-						findRel (row, column, row - 1, column, depth, search);
-						break;
-					case 3:
-						findRel (row, column, row - 1, column - 1, depth, search);
-						break;
-					case 4:
-						findRel (row, column, row, column - 1, depth, search);
-						break;
-					case 5:
-						findRel (row, column, row + 1, column - 1, depth, search);
-						break;
-					}
-				}
-				if (row %2 == 1 && search[i] == 1) {
-					switch (i) {
-					case 0:
-						findRel (row, column, row + 1, column + 1, depth, search);
-						break;
-					case 1:
-						findRel (row, column, row, column + 1, depth, search);
-						break;
-					case 2:
-						findRel (row, column, row - 1, column + 1, depth, search);
-						break;
-					case 3:
-						findRel (row, column, row - 1, column, depth, search);
-						break;
-					case 4:
-						findRel (row, column, row, column - 1, depth, search);
-						break;
-					case 5:
-						findRel (row, column, row + 1, column, depth, search);
-						break;
-					}
-				}
-			}
-		}
-	}
-	*/
-
