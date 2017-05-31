@@ -1,4 +1,4 @@
-﻿	using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
@@ -8,8 +8,6 @@ public class HexGrid : MonoBehaviour {
 	HexCell[] cells;
 	private string result;
 	public HexMesh hexMesh;
-
-
 
 	//Grid Function Variable
 	public static int gridColumn = 15;
@@ -28,7 +26,19 @@ public class HexGrid : MonoBehaviour {
 	public float shiftIndicator = 0.3f;
 
 	//Variable for Checking Island
-	List<int[,,]> islands; //x pos, y pos, and counter no
+	public class Islands {
+		public int XPos;
+		public int YPos;
+		public int No;
+
+		public Islands (int xPos, int yPos, int no) {
+			XPos = xPos;
+			YPos = yPos;
+			No = no;
+		}
+	}
+	public List<Islands> islands = new List <Islands> () ;
+
 	int landCounter = 0;
 	int[,] landList = new int[gridRow, gridColumn];
 
@@ -165,45 +175,42 @@ public class HexGrid : MonoBehaviour {
 			if (noise<(1-initStart)) gridList[(x-offset),(y-offset)] = 0;
 			else {
 				gridList[x-offset, y-offset] = 1; 
+					islands.Add (new Islands(x-offset,y-offset,0));
 			}
 		}
 	}
 
 	void Awake () {
-		bool checkCon = false;
-		initRandom(gridRow,gridColumn);
-		int[] firstPoint = { 0, 0 };
-		//Checking the Island
-		for (int i = 0; i < gridRow; i++) {
-			for (int j = 0; j < gridColumn; j++){
-				if (gridList[i,j] > 0 && landList[i,j] == 0) {
-					landCounter++;
-					islandTag(i,j,landCounter);
-				}
-			}
-		}
-
-		foreach (int i in landCount) {
-			if (i > 0) {
-				Debug.Log (i);
-			}
-		}
-
-		Debug.Log (landCounter);
-
 		cells = new HexCell[gridRow * gridColumn];
-
 		gridCanvas = GetComponentInChildren<Canvas>();
-		
-		for (int z = 0, i = 0; z < gridRow; z++) {
-			for (int x = 0; x < gridColumn; x++) {
-				if (gridList[z,x] >= 1) {
-					CreateCell(x, z, i++);	
-				}
-			}
+
+		//Creating the Island
+		initRandom(gridRow,gridColumn);
+
+
+		//Indicating the Island with landCounter
+		for (int cnt = 0; cnt < islands.Count; cnt++) {
+			if (landList[islands[cnt].XPos,islands[cnt].YPos] == 0) {
+				landCounter++;
+				islandTag(islands[cnt].XPos,islands[cnt].YPos,landCounter);
+			}	
+			islands [cnt].No = landList [islands [cnt].XPos, islands [cnt].YPos];
+		}
+			
+		//Debug Log on Islands
+		Debug.Log (landCounter);
+		Debug.Log (islands);
+		for(int cnt = 0; cnt < islands.Count; cnt++) {
+			Debug.Log("X: " + islands[cnt].XPos + "  Y:" + islands[cnt].YPos + "  No:" + islands[cnt].No);
+		}
+			
+
+		//Creating the Cells
+		for(int cnt = 0; cnt < islands.Count; cnt++) {
+			CreateCell(islands[cnt].XPos,islands[cnt].YPos,cnt);
 		}
 	}
-	
+
 
 	void CreateCell (int x, int z, int i) {
 		Vector3 position;
