@@ -10,8 +10,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 30;
-	public static int gridRow = 30;
+	public static int gridColumn = 200;
+	public static int gridRow = 200;
 	int[] landCount = new int[gridRow*gridColumn/3];
 
 	//Perlin Funcion Variable
@@ -221,8 +221,13 @@ public class HexGrid : MonoBehaviour {
 		int x = selectedIslands [0].XPos;
 		int y = selectedIslands [0].YPos;
 		border = findMax (border);
+		int loopCheck = 0;
 
-		while (border [1] < (gridRow-1) || canMove == false) {
+		while (border [1] < (gridRow - 1) || canMove == false) {
+			loopCheck += 1;
+			if (loopCheck > 100) {
+				return;
+			}
 			canMove = true;
 			//Go Right
 			while (border [3] < (gridColumn - 2)) {
@@ -240,7 +245,7 @@ public class HexGrid : MonoBehaviour {
 					}
 				}
 				border = findMax (border);
-				if (border[1] >= gridRow) {
+				if (border [1] >= gridRow) {
 					for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 						selectedIslands [cnt].YPos -= 1;
 					}
@@ -264,7 +269,7 @@ public class HexGrid : MonoBehaviour {
 					}
 				}
 				border = findMax (border);
-				if (border[2] < 0) {
+				if (border [2] < 0) {
 					for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 						selectedIslands [cnt].YPos += 1;
 					}
@@ -291,15 +296,16 @@ public class HexGrid : MonoBehaviour {
 			}
 			border = findMax (border);
 
-			if (border[1] > gridRow-2) {
+			if (border [1] > gridRow - 2 && border[0] >= 2) {
 				for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 					selectedIslands [cnt].XPos -= 2;
 				}
-				border [0]-= 2;
-				border [1]-= 2;
-				break;
+				border [0] -= 2;
+				border [1] -= 2;
+				return;
 			}
 		}
+
 	}
 
 
@@ -325,15 +331,11 @@ public class HexGrid : MonoBehaviour {
 		}
 			
 		combineIslands();
-			
-		//Debug Log on Islands
 
-		//for(int cnt = 0; cnt < islands.Count; cnt++) {
-	//		Debug.Log("X: " + islands[cnt].XPos + "  Y:" + islands[cnt].YPos + "  No:" + islands[cnt].No);
-	//	}
-		/*for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
+
+		for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 			Debug.Log("X: " + selectedIslands[cnt].XPos + "  Y:" + selectedIslands[cnt].YPos + "  No:" + selectedIslands[cnt].No);
-		}*/
+		}
 			
 
 		//Creating the Cells
