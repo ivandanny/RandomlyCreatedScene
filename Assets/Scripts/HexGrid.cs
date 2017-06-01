@@ -10,9 +10,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 200;
-	public static int gridRow = 200;
-	int[] landCount = new int[gridRow*gridColumn/3];
+	public static int gridColumn = 60;
+	public static int gridRow = 60;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
@@ -94,7 +93,6 @@ public class HexGrid : MonoBehaviour {
 			selectedIslands.Add (new SelectedIslands(row, column,1));
 		}
 		landList [row, column] = counter;
-		landCount [counter-1]++;
 		int[] search = indexCheck (row, column);
 		for (int i = 0; i < 6; i++) {
 			if (row %2 == 0 && search[i] == 1) {
@@ -236,7 +234,6 @@ public class HexGrid : MonoBehaviour {
 					selectedIslands [cnt].YPos += 1;
 					x = selectedIslands [cnt].XPos;
 					y = selectedIslands [cnt].YPos;
-					//Debug.Log ("Right  : " + x + ", " + y);
 					if (y + 1 < gridColumn) {
 						if (gridList [x, y] == 1 && landList [x, y] != 1) {
 							Debug.Log ("Found Right" + landList [x, y]);
@@ -260,7 +257,6 @@ public class HexGrid : MonoBehaviour {
 					selectedIslands [cnt].YPos -= 1;
 					x = selectedIslands [cnt].XPos;
 					y = selectedIslands [cnt].YPos;
-					//Debug.Log ("Left  : " + x + ", " + y);
 					if (y > 0) {
 						if (gridList [x, y] == 1 && landList [x, y] != 1) {
 							Debug.Log ("Found Left" + landList [x, y]);
@@ -279,17 +275,23 @@ public class HexGrid : MonoBehaviour {
 			}
 
 			//Go Up
+			int first = selectedIslands.Count;
+			int second = 0;
+
 			if (border [1] < gridRow - 2) {
 				Debug.Log ("UP + 1");
 				for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 					selectedIslands [cnt].XPos += 2;
 					x = selectedIslands [cnt].XPos;
 					y = selectedIslands [cnt].YPos;
-					//Debug.Log ("UP  : " + x + ", " + y);
 					if (x + 2 < gridRow) {
 						if (gridList [x, y] == 1 && landList [x, y] != 1) {
 							Debug.Log ("Found Up" + landList [x, y]);
 							islandTag (x, y, 1, 1);
+							second = selectedIslands.Count;
+							for (int i = second-1; i >= first; i-- ) {
+								selectedIslands[i].XPos -= 2;
+							}
 						}
 					}
 				}
@@ -332,12 +334,6 @@ public class HexGrid : MonoBehaviour {
 			
 		combineIslands();
 
-
-		for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
-			Debug.Log("X: " + selectedIslands[cnt].XPos + "  Y:" + selectedIslands[cnt].YPos + "  No:" + selectedIslands[cnt].No);
-		}
-			
-
 		//Creating the Cells
 		for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 			CreateCell(selectedIslands[cnt].YPos,selectedIslands[cnt].XPos,cnt);
@@ -362,7 +358,6 @@ public class HexGrid : MonoBehaviour {
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
 		label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
-		//label.text = landList[x,z].ToString();
 		label.text = z.ToString() + "\n" + x.ToString() + "\n" + landList[z,x].ToString();
 	}
 
