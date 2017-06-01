@@ -10,8 +10,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 60;
-	public static int gridRow = 60;
+	public static int gridColumn = 360;
+	public static int gridRow = 360;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
@@ -177,9 +177,11 @@ public class HexGrid : MonoBehaviour {
 		{
 			Vector2 pos = zoom * (new Vector2(x,y)) + shift;
 			Vector2 pos2 = pos*4;
+			Vector2 pos3 = pos / 3;
 			float noise = Mathf.PerlinNoise(pos.x, pos.y);
 			noise += (Mathf.PerlinNoise ((pos2.x), (pos2.y))-0.5f)/2.5f;
-			if (noise<(1-initStart)) gridList[(x-offset),(y-offset)] = 0;
+			noise += (Mathf.PerlinNoise ((pos3.x), (pos3.y)))/1.5f;
+			if (noise<(1.8-initStart)) gridList[(x-offset),(y-offset)] = 0;
 			else {
 				gridList[x-offset, y-offset] = 1; 
 				islands.Add (new Islands(x-offset,y-offset,0));
@@ -284,13 +286,17 @@ public class HexGrid : MonoBehaviour {
 					selectedIslands [cnt].XPos += 2;
 					x = selectedIslands [cnt].XPos;
 					y = selectedIslands [cnt].YPos;
+					Debug.Log ("UP: " + border [0] + " " + border [1] + " " + border [2] + " " + border [3]);
 					if (x + 2 < gridRow) {
+						Debug.Log ("UP2: " + x + " " + y);
 						if (gridList [x, y] == 1 && landList [x, y] != 1) {
-							Debug.Log ("Found Up" + landList [x, y]);
+							//Debug.Log ("Found Up" + landList [x, y]);
 							islandTag (x, y, 1, 1);
 							second = selectedIslands.Count;
 							for (int i = second-1; i >= first; i-- ) {
-								selectedIslands[i].XPos -= 2;
+								if (selectedIslands [i].XPos >= 2) {
+									selectedIslands [i].XPos -= 2;
+								}
 							}
 						}
 					}
@@ -355,10 +361,12 @@ public class HexGrid : MonoBehaviour {
 		hex.transform.SetParent(transform, false);
 		hex.transform.localPosition = position;
 
+		/*
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
 		label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
 		label.text = z.ToString() + "\n" + x.ToString() + "\n" + landList[z,x].ToString();
+		*/
 	}
 
 	
