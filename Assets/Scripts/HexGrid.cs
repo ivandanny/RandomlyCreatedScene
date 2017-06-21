@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class HexGrid : MonoBehaviour {
 
+	public Material[] material_list;
+
 	public HexCell cellPrefab;
 	HexCell[] cells;
 	private string result;
@@ -307,20 +309,191 @@ public class HexGrid : MonoBehaviour {
 		}
 
 	}
+		
+	void labelCountry (int row, int column, int size, int mark, int no) {
+		if (landList[row,column] != 0 || no >= size || gridList[row,column] != 1){
+			return;
+		}
 
+		landList [row, column] = mark;
 
-void createCountries () {
+		if (no < size) {
+			landList [row, column] = mark;
+			int[] search = indexCheck (row, column);
+
+			if (row %2 == 0) {
+				if (search [0] == 1) {
+					if (gridList [row + 1, column] <= 0 || (landList[row+1,column] <= mark || landList[row+1,column] != 0)) {
+						search [0] = 0;
+					}
+				}
+				if (search [1] == 1) {
+					if (gridList [row , column+1] <= 0|| (landList[row,column+1] == mark || landList[row,column+1] != 0)) {
+						search [1] = 0;
+					}
+				}
+				if (search [2] == 1) {
+					if (gridList [row -1, column] <= 0|| (landList[row-1,column] == mark || landList[row-1,column] != 0)) {
+						search [2] = 0;
+					}
+				}
+				if (search [3] == 1) {
+					if (gridList [row -1, column-1] <= 0|| (landList[row-1,column-1] == mark || landList[row-1,column-1] != 0)) {
+						search [3] = 0;
+					}
+				}
+				if (search [4] == 1) {
+					if (gridList [row , column-1] <= 0|| (landList[row,column-1] == mark || landList[row,column-1] != 0)) {
+						search [4] = 0;
+					}
+				}
+				if (search [5] == 1) {
+					if (gridList [row + 1, column-1] <= 0|| (landList[row+1,column-1] == mark || landList[row+1,column-1] != 0)) {
+						search [5] = 0;
+					}
+				}
+			}
+			if (row %2 == 1) {
+				if (search [0] == 1) {
+					if (gridList [row + 1, column+1] <= 0|| (landList[row+1,column+1] == mark || landList[row+1,column+1] != 0)) {
+						search [0] = 0;
+					}
+				}
+				if (search [1] == 1) {
+					if (gridList [row , column+1] <= 0|| (landList[row,column+1] == mark || landList[row,column+1] != 0)) {
+						search [1] = 0;
+					}
+				}
+				if (search [2] == 1) {
+					if (gridList [row -1, column+1] <= 0|| (landList[row-1,column+1] == mark || landList[row-1,column+1] != 0)) {
+						search [2] = 0;
+					}
+				}
+				if (search [3] == 1) {
+					if (gridList [row -1, column] <= 0|| (landList[row-1,column] == mark || landList[row-1,column] != 0)) {
+						search [3] = 0;
+					}
+				}
+				if (search [4] == 1) {
+					if (gridList [row , column-1] <= 0|| (landList[row,column-1] == mark || landList[row,column-1] != 0)) {
+						search [4] = 0;
+					}
+				}
+				if (search [5] == 1) {
+					if (gridList [row + 1, column] <= 0|| (landList[row+1,column] == mark || landList[row+1,column] != 0)) {
+						search [5] = 0;
+					}
+				}
+			}
+
+			int sum = 0;
+			int line = -1;
+			for (int i = 0; i < search.Length; i++) {
+				if (search [i] == 1) {
+					
+					sum++;
+					//Debug.Log ("Sample :" + i);
+				}
+			}
+
+			//Debug.Log (row + " " + column + ", " + mark +", sum: " + sum);
+
+			if (sum != 0) {
+				float chance = Random.Range (0.0f, 1.0f);
+				int j = 0;
+				while (chance > 0.0f) {
+					j += 1;
+					chance -= 1.0f / sum;
+				}
+				bool check = false;
+				int k = 0;
+				while ( check == false) {
+					if (search [k] == 1) {
+						j -= 1;
+					}
+					if (j == 0) {
+						line = k;
+						check = true;
+					}
+					k++;
+				}
+
+				//Debug.Log (line);
+				//Check position by sum here (using Case)
+				if (row %2 == 0) {
+					switch (line) {
+					case 0:
+						//Debug.Log (mark + " is going top right, pos " + row + " " + column);
+						labelCountry (row + 1, column, size, mark, (no + 1));
+						break;
+					case 1:
+						//Debug.Log (mark + " is going right, pos " + row + " " + column);
+						labelCountry (row , column + 1, size, mark, (no+1));
+						break;
+					case 2:
+						//Debug.Log (mark + " is going bottom right, pos " + row + " " + column);
+						labelCountry (row - 1, column, size, mark, (no+1));
+						break;
+					case 3:
+						//Debug.Log (mark + " is going bottom left, pos " + row + " " + column);
+						labelCountry (row - 1, column - 1, size, mark, (no+1));
+						break;
+					case 4:
+						//Debug.Log (mark + " is going left, pos " + row + " " + column);
+						labelCountry (row, column - 1, size, mark, (no+1));
+						break;
+					case 5:
+						//Debug.Log (mark + " is going top left, pos " + row + " " + column);
+						labelCountry (row+1, column - 1, size, mark, (no+1));
+						break;
+					}
+				}
+				if (row %2 == 1) {
+					switch (line) {
+					case 0:
+						//Debug.Log (mark + " is going top right, pos " + row + " " + column);
+						labelCountry (row+1, column + 1, size, mark, (no+1));
+						break;
+					case 1:
+						//Debug.Log (mark + " is going right, pos " + row + " " + column);
+						labelCountry (row , column + 1, size, mark, (no+1));
+						break;
+					case 2:
+						//Debug.Log (mark + " is going bottom right, pos " + row + " " + column);
+						labelCountry (row - 1, column + 1, size, mark, (no+1));
+						break;
+					case 3:
+						//Debug.Log (mark + " is going bottom left, pos " + row + " " + column);
+						labelCountry (row - 1, column, size, mark, (no+1));
+						break;
+					case 4:
+						//Debug.Log (mark + " is going left, pos " + row + " " + column);
+						labelCountry (row, column - 1, size, mark, (no+1));
+						break;
+					case 5:
+						//Debug.Log (mark + " is going top left, pos " + row + " " + column);
+						labelCountry (row + 1, column, size, mark, (no+1));
+						break;
+					}
+				}
+			}
+		}
+	}
+		
+	void createCountries () {
 		for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 			gridList [selectedIslands [cnt].XPos, selectedIslands [cnt].YPos] = 1;
 		}
-		int count = 1;
+
+		int count2 = 0;
 		for(int cnt = 0; cnt < selectedIslands.Count; cnt++) {
-			int size = 0;
+			int size = Random.Range(minIslands,maxIslands+1);
 			int x = selectedIslands [cnt].XPos;
 			int y = selectedIslands [cnt].YPos;
 			if (landList [x, y] == 0) {
-				landList [x, y] = count;
-				count += 1;
+				count2++;
+				labelCountry (x, y,size, count2, 0);
+				size = Random.Range(minIslands,maxIslands+1);
 			}
 		}
 
@@ -368,7 +541,7 @@ void createCountries () {
 	void CreateCell (int x, int z, int i) {
 		Vector3 position;
 		position.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
-		position.y = heightList[x,z]* 20;
+		position.y = 0; //heightList[x,z]* 20;
 		position.z = z * (HexMetrics.outerRadius * 1.5f);
 		
 		HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
@@ -379,12 +552,13 @@ void createCountries () {
 		hex.transform.SetParent(transform, false);
 		hex.transform.localPosition = position;
 
-
+		hex.GetComponent<Renderer> ().material = material_list[landList[z,x] % material_list.Length];
+		/*
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
 		label.rectTransform.anchoredPosition3D = new Vector3(position.x, position.z, (position.y *-1));
 		label.text = landList[z,x].ToString();
-
+		*/
 	}
 
 	
