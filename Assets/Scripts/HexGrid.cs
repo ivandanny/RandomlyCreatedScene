@@ -12,8 +12,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 150;
-	public static int gridRow = 150;
+	public static int gridColumn = 12;
+	public static int gridRow = 12;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
@@ -179,7 +179,8 @@ public class HexGrid : MonoBehaviour {
 	void initRandom (int row, int column) {
 
 		Vector2 shift = new Vector2(shiftIndicator,shiftIndicator); // play with this to shift map around
-		int offset = Random.Range (0, 10000);
+		//int offset = Random.Range (0, 10000);
+		int offset = 9;
 		for(int x = offset; x < (row+offset); x++)
 			for(int y = offset; y < (column+offset); y++)
 			{
@@ -225,9 +226,9 @@ public class HexGrid : MonoBehaviour {
 		border = findMax (border);
 		int loopCheck = 0;
 
-		while (border [1] < (gridRow - 1) || canMove == false) {
+		while (border [1] < (gridRow - 1) || canMove == false) {  // Lok for this statement!
 			loopCheck += 1;
-			if (loopCheck > 100) {
+			if (loopCheck > 7) {
 				return;
 			}
 			canMove = true;
@@ -278,7 +279,7 @@ public class HexGrid : MonoBehaviour {
 			int first = selectedIslands.Count;
 			int second = 0;
 
-			if (border [1] < gridRow - 3) {
+			if (border [1] < gridRow - 2) {
 				for (int cnt = 0; cnt < selectedIslands.Count; cnt++) {
 					selectedIslands [cnt].XPos += 2;
 					x = selectedIslands [cnt].XPos;
@@ -522,7 +523,7 @@ public class HexGrid : MonoBehaviour {
 			}
 		}
 
-		//Combine the separated islands into one
+		//Combine the separated islands into one	
 		combineIslands();
 
 		//Create Countries
@@ -541,7 +542,8 @@ public class HexGrid : MonoBehaviour {
 	void CreateCell (int x, int z, int i) {
 		Vector3 position;
 		position.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
-		position.y = 0; //heightList[x,z]* 20;
+		//position.y = heightList[x,z]* 20;
+		position.y = 0;
 		position.z = z * (HexMetrics.outerRadius * 1.5f);
 		
 		HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
