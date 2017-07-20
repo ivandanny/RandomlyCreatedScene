@@ -180,7 +180,7 @@ public class HexGrid : MonoBehaviour {
 
 		Vector2 shift = new Vector2(shiftIndicator,shiftIndicator); // play with this to shift map around
 		//int offset = Random.Range (0, 10000);
-		int offset = 9;
+		int offset = 19;
 		for(int x = offset; x < (row+offset); x++)
 			for(int y = offset; y < (column+offset); y++)
 			{
@@ -563,5 +563,5 @@ public class HexGrid : MonoBehaviour {
 		*/
 	}
 
-	
+
 }
