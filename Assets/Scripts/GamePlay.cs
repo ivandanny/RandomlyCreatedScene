@@ -35,25 +35,30 @@ public class GamePlay : MonoBehaviour {
 
 			if (hit.transform.tag == "Tank") {
 				isMove = false;
+				clickedCell = null;
 				typeHit = 1;
-				if (tankName != hit.transform.name) {
-					clickedCell = null;
-					tankName = hit.transform.name;
-				}
 				clickedTank = hit.collider.gameObject;
 			}
 
 			if (hit.transform.tag == "Core") {
+				clickedTank = null;
 				clickedCell = null;
 				isMove = false;
 				typeHit = 2;
 			}
-
+				
 			switch (typeHit) {
 			case 1:
 				if (hit.transform.name == "Hex Mesh(Clone)") {
 					clickedCell = hit.collider.gameObject;
+					tankScript.moveTo = clickedCell;
 					isMove = true;
+				}
+
+				if (hit.transform.tag == "Tank") {
+					clickedCell = hit.collider.gameObject;
+					typeHit = 1;
+					isMove = false;
 				}
 
 				if (hit.transform.tag == "Core") {
@@ -65,20 +70,17 @@ public class GamePlay : MonoBehaviour {
 			case 2:
 				isMove = false;
 				if (hit.transform.name == "Hex Mesh(Clone)") {
-					clickedCell = null;
+					isMove = false;
+					clickedTank = null;
 					clickedCell = hit.collider.gameObject;
 					TankScript tank = Instantiate <TankScript> (tankScript);
 					tank.transform.SetParent(transform, false);
 					Vector3 position = clickedCell.transform.position;
 					position.y = 5.0f;
 					tank.transform.position = position;
-					typeHit = 1;
+					typeHit = 0;
 				}
 				break;
-			case 3:
-				
-				break;
-				}
 			}
 		}
 
