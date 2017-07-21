@@ -83,7 +83,7 @@ public class GamePlay : MonoBehaviour {
 				break;
 			}
 		}
-
+	}
 	void TouchCell (Vector3 position) {
 		position = transform.InverseTransformPoint(position);
 		//Debug.Log("touched at " + position);
