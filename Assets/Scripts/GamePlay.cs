@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class GamePlay : MonoBehaviour {
 
-	public int tankHit;
-	private bool isMove = false;
+	public int typeHit;
+	public bool isMove = false;
 	private GameObject clickedTank = null;
 	private GameObject clickedCell = null;
 	private string tankName = "";
+
+	public TankScript tankScript;
 
 	void Update () {
 		if (Input.GetMouseButton(0)) {
@@ -30,22 +32,55 @@ public class GamePlay : MonoBehaviour {
 		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if (Physics.Raycast(inputRay, out hit)) {
+
 			if (hit.transform.tag == "Tank") {
-				tankHit = 1;
 				isMove = false;
+				typeHit = 1;
 				if (tankName != hit.transform.name) {
 					clickedCell = null;
 					tankName = hit.transform.name;
 				}
 				clickedTank = hit.collider.gameObject;
-			} else {
-				if (hit.transform.name == "Hex Mesh(Clone)" && tankHit == 1) {
+			}
+
+			if (hit.transform.tag == "Core") {
+				clickedCell = null;
+				isMove = false;
+				typeHit = 2;
+			}
+
+			switch (typeHit) {
+			case 1:
+				if (hit.transform.name == "Hex Mesh(Clone)") {
 					clickedCell = hit.collider.gameObject;
 					isMove = true;
 				}
+
+				if (hit.transform.tag == "Core") {
+					clickedCell = hit.collider.gameObject;
+					typeHit = 2;
+					isMove = false;
+				}
+				break;
+			case 2:
+				isMove = false;
+				if (hit.transform.name == "Hex Mesh(Clone)") {
+					clickedCell = null;
+					clickedCell = hit.collider.gameObject;
+					TankScript tank = Instantiate <TankScript> (tankScript);
+					tank.transform.SetParent(transform, false);
+					Vector3 position = clickedCell.transform.position;
+					position.y = 5.0f;
+					tank.transform.position = position;
+					typeHit = 1;
+				}
+				break;
+			case 3:
+				
+				break;
+				}
 			}
 		}
-	}
 
 	void TouchCell (Vector3 position) {
 		position = transform.InverseTransformPoint(position);

@@ -5,15 +5,16 @@ using UnityEngine;
 public class TankScript : MonoBehaviour {
 
 	public HexGrid hexGrid;
-	public int randomStart;
+	private int randomStart;
 
 	void Start () {
-		Debug.Log (hexGrid.selectedIslands[5].YPos);
+		/*
 		randomStart = Random.Range (0, hexGrid.selectedIslands.Count);
 		int x = hexGrid.selectedIslands [randomStart].YPos;
 		int y = hexGrid.selectedIslands [randomStart].XPos;
+		Debug.Log (x +"    " + y);
 		transform.position = new Vector3 ((x + y * 0.5f - y / 2) * (HexMetrics.innerRadius * 2f),5.0f,(y*(HexMetrics.outerRadius*1.5f)));
-
+*/
 	}
 
 	// Update is called once per frame
