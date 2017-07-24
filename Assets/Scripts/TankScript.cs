@@ -7,16 +7,21 @@ public class TankScript : MonoBehaviour {
 	public HexGrid hexGrid;
 	private int randomStart;
 	public GameObject moveTo = null;
+	public int playerNo;
+
+	public void TankMoveTo(GameObject target) {
+		transform.position = Vector3.Lerp (transform.position, 
+			new Vector3 (target.transform.position.x, 5.0f, target.transform.position.z), .005f);
+		if ((Mathf.Abs (this.transform.position.x - target.transform.position.x) < .003f) &&
+		    (Mathf.Abs (this.transform.position.z - target.transform.position.z)) < .003f) {
+			target = null;
+		}
+	}
 
 	// Update is called once per frame
 	void Update () {
 		if (moveTo != null) {
-			transform.position = Vector3.Lerp (transform.position, 
-				new Vector3 (moveTo.transform.position.x, 5.0f, moveTo.transform.position.z), .1f);
-			if ((Mathf.Abs(moveTo.transform.position.x - moveTo.transform.position.x) < .3f) && 
-				(Mathf.Abs(moveTo.transform.position.z - moveTo.transform.position.z)) < .3f) {
-				moveTo = null;
-			}
+			TankMoveTo (moveTo);
 		}
 	}
 }
