@@ -13,12 +13,13 @@ public class TankScript : MonoBehaviour {
 	public GameObject enemy = null;
 
 	public HitScript hitScript;
+	public float speed;
 
 	public void TankMoveTo(GameObject target) {
-		transform.position = Vector3.Lerp (transform.position, 
-			new Vector3 (target.transform.position.x, 5.0f, target.transform.position.z), .5f);
-		if ((Mathf.Abs (this.transform.position.x - target.transform.position.x) < .003f) &&
-		    (Mathf.Abs (this.transform.position.z - target.transform.position.z)) < .003f) {
+		//transform.position = Vector3.Lerp (transform.position, new Vector3 (target.transform.position.x, 5.0f, target.transform.position.z), Time.deltaTime);
+		float step = speed * Time.deltaTime;
+		transform.position = Vector3.MoveTowards(transform.position, new Vector3 (target.transform.position.x, 5.0f, target.transform.position.z), step);
+		if ((Mathf.Abs (transform.position.x - target.transform.position.x) < .003f) && (Mathf.Abs (transform.position.z - target.transform.position.z)) < .003f) {
 			target = null;
 		}
 	}
