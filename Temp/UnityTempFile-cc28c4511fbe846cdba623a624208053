@@ -103,6 +103,7 @@
 'Assets/Scripts/HexGrid.cs'
 'Assets/Scripts/HexMesh.cs'
 'Assets/Scripts/HexMetrics.cs'
+'Assets/Scripts/HitScript.cs'
 'Assets/Scripts/TankScript.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Xml.Linq.dll'

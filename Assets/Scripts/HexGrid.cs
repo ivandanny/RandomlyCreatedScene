@@ -12,8 +12,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 20;
-	public static int gridRow = 20;
+	public static int gridColumn = 10;
+	public static int gridRow = 10;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
@@ -179,8 +179,8 @@ public class HexGrid : MonoBehaviour {
 	void initRandom (int row, int column) {
 
 		Vector2 shift = new Vector2(shiftIndicator,shiftIndicator); // play with this to shift map around
-		//int offset = Random.Range (0, 10000);
-		int offset = 19;
+		int offset = Random.Range (0, 10000);
+		//int offset = 5;
 		for(int x = offset; x < (row+offset); x++)
 			for(int y = offset; y < (column+offset); y++)
 			{

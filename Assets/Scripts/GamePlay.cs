@@ -35,13 +35,13 @@ public class GamePlay : MonoBehaviour {
 				
 			switch (typeHit) {
 			case 1:
-				if (hit.transform.name == "Hex Mesh(Clone)") {
+				if (hit.transform.tag == "Cell" && clickedTank != null) {
 					clickedTank.GetComponent<TankScript> ().moveTo = hit.transform.gameObject;
 				} else
 					CheckInput(hit);
 				break;
 			case 2:
-				if (hit.transform.name == "Hex Mesh(Clone)") {
+				if (hit.transform.tag == "Cell") {
 					clickedCore.GetComponent<CoreScript> ().isSpawn = true;
 					clickedCore.GetComponent<CoreScript> ().target = hit.transform.gameObject;
 					typeHit = 0;

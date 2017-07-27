@@ -14,7 +14,7 @@ public class CoreScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		randomStart = Random.Range (0, hexGrid.selectedIslands.Count	);
+		randomStart = Random.Range (0, hexGrid.selectedIslands.Count);
 		int x = hexGrid.selectedIslands [randomStart].YPos;
 		int y = hexGrid.selectedIslands [randomStart].XPos;
 		Debug.Log (x +"    " + y);
@@ -25,7 +25,7 @@ public class CoreScript : MonoBehaviour {
 	void SpawnTank (int player, GameObject moveTo) {
 		TankScript tank = Instantiate <TankScript> (tankScript);
 		tank.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
-		//tank.transform.SetParent (transform, true);
+		tank.GetComponent<TankScript>().playerNo = playerNo;
 		Vector3 position = moveTo.transform.position;
 		position.y = 5.0f;
 		tank.transform.localPosition = position;
