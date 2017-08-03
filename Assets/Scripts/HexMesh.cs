@@ -4,10 +4,15 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class HexMesh : MonoBehaviour {
+	public int countryNo = 0;
+
 	
 	Mesh hexMesh;
 	List<Vector3> vertices;
 	List<int> triangles;
+
+	public GameObject particleGlow;
+	public GameObject gameplayObj;
 
 	MeshCollider meshCollider;
 	
@@ -23,9 +28,6 @@ public class HexMesh : MonoBehaviour {
 				center + HexMetrics.corners [i + 1]
 				);
 		}
-		/*for (int i = 0; i < cells.Length; i++) {
-			Triangulate(cells[i]);
-		}*/
 		hexMesh.vertices = vertices.ToArray();
 		hexMesh.triangles = triangles.ToArray();
 		hexMesh.RecalculateNormals();
@@ -54,6 +56,15 @@ public class HexMesh : MonoBehaviour {
 	}
 
 	void Start () {
+		gameplayObj = GameObject.FindGameObjectWithTag ("GameController");
+		particleGlow.SetActive (false);
 		Triangulate ();
+	}
+
+	void Update () {
+		if (countryNo == gameplayObj.GetComponent<GamePlay> ().currentCountry) {
+			particleGlow.SetActive (true);
+		} else
+			particleGlow.SetActive (false);
 	}
 }

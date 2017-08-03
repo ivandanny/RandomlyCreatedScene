@@ -2,11 +2,10 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/HexGrid.cs">
     <Files>
-      <File FileName="Assets/Scripts/GamePlay.cs" Line="41" Column="22" />
-      <File FileName="Assets/Scripts/CoreScript.cs" Line="9" Column="25" />
-      <File FileName="Assets/Scripts/HexGrid.cs" Line="187" Column="47" />
-      <File FileName="Assets/Scripts/HitScript.cs" Line="17" Column="1" />
-      <File FileName="Assets/Scripts/TankScript.cs" Line="41" Column="28" />
+      <File FileName="Assets/Scripts/TankScript.cs" Line="22" Column="58" />
+      <File FileName="Assets/Scripts/HexGrid.cs" Line="566" Column="46" />
+      <File FileName="Assets/Scripts/HexMesh.cs" Line="4" Column="1" />
+      <File FileName="Assets/Scripts/HitScript.cs" Line="13" Column="42" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

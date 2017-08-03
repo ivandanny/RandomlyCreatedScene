@@ -45,6 +45,9 @@ public class HexGrid : MonoBehaviour {
 	}
 	public List<Islands> islands = new List <Islands> () ;
 
+	int landCounter = 0;
+	int[,] landList = new int[gridRow, gridColumn];
+
 	public class SelectedIslands {
 		public int XPos;
 		public int YPos;
@@ -56,10 +59,19 @@ public class HexGrid : MonoBehaviour {
 			No = no;
 		}
 	}
+
 	public List<SelectedIslands> selectedIslands = new List <SelectedIslands> () ;
 
-	int landCounter = 0;
-	int[,] landList = new int[gridRow, gridColumn];
+	public class Countries {
+		public int[,] XYCountry;
+
+		public Countries (int[,] xyCountry) {
+			XYCountry = xyCountry;
+		}
+	}
+
+	public List<Countries> countries = new List <Countries> () ;
+
 
 	//Check to prevent array out of Index
 	int[] indexCheck (int x, int y) {
@@ -310,16 +322,16 @@ public class HexGrid : MonoBehaviour {
 		}
 
 	}
-		
+
+// !!!!!!
 	void labelCountry (int row, int column, int size, int mark, int no) {
 		if (landList[row,column] != 0 || no >= size || gridList[row,column] != 1){
 			return;
 		}
 
-		landList [row, column] = mark;
-
 		if (no < size) {
 			landList [row, column] = mark;
+			Debug.Log (mark);
 			int[] search = indexCheck (row, column);
 
 			if (row %2 == 0) {
@@ -493,8 +505,7 @@ public class HexGrid : MonoBehaviour {
 			int y = selectedIslands [cnt].YPos;
 			if (landList [x, y] == 0) {
 				count2++;
-				labelCountry (x, y,size, count2, 0);
-				size = Random.Range(minIslands,maxIslands+1);
+				labelCountry (x, y,size, count2,0);
 			}
 		}
 
@@ -540,21 +551,27 @@ public class HexGrid : MonoBehaviour {
 
 
 	void CreateCell (int x, int z, int i) {
+		Debug.Log (x + "  " + z + "  =  " + i + " = " + landList [z,x]);
 		Vector3 position;
 		position.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
 		//position.y = heightList[x,z]* 20;
 		position.y = 0;
 		position.z = z * (HexMetrics.outerRadius * 1.5f);
-		
-		HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
-		cell.transform.SetParent(transform, false);
-		cell.transform.localPosition = position;
+
 
 		HexMesh hex = Instantiate<HexMesh>(hexMesh);
 		hex.transform.SetParent(transform, false);
 		hex.transform.localPosition = position;
+		hex.GetComponent <HexMesh> ().countryNo = landList [z, x];
+		//countries.Add (new Countries(int [0,0]));
 
 		hex.GetComponent<Renderer> ().material = material_list[landList[z,x] % material_list.Length];
+
+
+		//HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
+		//cell.transform.SetParent(transform, false);
+		//cell.transform.localPosition = position;
+
 		/*
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);

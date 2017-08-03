@@ -5,6 +5,7 @@ using UnityEngine;
 public class GamePlay : MonoBehaviour {
 
 	public int typeHit;
+	public int currentCountry;
 	private GameObject clickedTank = null;
 	private GameObject clickedCore = null;
 	private string tankName = "";
@@ -15,6 +16,7 @@ public class GamePlay : MonoBehaviour {
 			HandleInput();
 		}
 	}
+		
 	void CheckInput (RaycastHit hit) {
 		if (hit.transform.tag == "Tank") {
 			typeHit = 1;
@@ -32,7 +34,9 @@ public class GamePlay : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(inputRay, out hit)) {
 			CheckInput (hit);
-				
+			if (hit.transform.tag == "Cell") {
+				currentCountry = hit.collider.gameObject.GetComponent<HexMesh> ().countryNo;
+			}
 			switch (typeHit) {
 			case 1:
 				if (hit.transform.tag == "Cell" && clickedTank != null) {

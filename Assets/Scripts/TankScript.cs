@@ -49,7 +49,7 @@ public class TankScript : MonoBehaviour {
 					Destroy (enemy.gameObject);
 					enemy = null;
 					onCombat = false;
-				}
+				}	
 			}
 		}
 	}
@@ -57,7 +57,6 @@ public class TankScript : MonoBehaviour {
 	void OnCollisionEnter (Collision collision) {
 		if (collision.gameObject != null) {
 			if (collision.gameObject.tag == "Tank" && collision.gameObject.GetComponent<TankScript> ().playerNo < playerNo) {
-				//Debug.Log ("hit!");
 				HitScript particle = Instantiate <HitScript> (hitScript);
 				particle.transform.position = transform.position;
 				enemy = collision.gameObject;
