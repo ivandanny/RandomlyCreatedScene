@@ -66,8 +66,11 @@ public class HexMesh : MonoBehaviour {
 			particleGlow.SetActive (true);
 		} else
 			particleGlow.SetActive (false);
-		if (gameplayObj.GetComponent<GamePlay> ().countrySide [countryNo] != countryOwner) {
-			
+		if (this.GetComponent<Renderer> ().material != gameplayObj.GetComponent<GamePlay> ().countryMat [countryOwner] && countryOwner != 0) {
+				this.GetComponent<Renderer> ().material = gameplayObj.GetComponent<GamePlay> ().countryMat [countryOwner-1];
+		}
+		if (countryOwner != gameplayObj.GetComponent<GamePlay> ().countrySide [countryNo]) {
+			countryOwner = gameplayObj.GetComponent<GamePlay> ().countrySide [countryNo];
 		}
 	}
 }

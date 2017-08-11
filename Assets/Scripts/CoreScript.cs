@@ -32,6 +32,7 @@ public class CoreScript : MonoBehaviour {
 		tank.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
 		tank.GetComponent<TankScript>().playerNo = playerNo;
 		Vector3 position = moveTo.transform.position;
+		gameplayObj.GetComponent<GamePlay> ().countrySide [target.GetComponent<HexMesh>().countryNo] = playerNo; 
 		position.y = 5.0f;
 		tank.transform.localPosition = position;
 		isSpawn = false;

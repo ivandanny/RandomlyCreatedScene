@@ -23,6 +23,7 @@ public class TankScript : MonoBehaviour {
 		if ((Mathf.Abs (transform.position.x - target.transform.position.x) < .003f) && (Mathf.Abs (transform.position.z - target.transform.position.z)) < .003f) {
 			if (target.GetComponent<HexMesh> ().countryOwner != playerNo) {
 				gameplayObj.GetComponent<GamePlay> ().countrySide [target.GetComponent<HexMesh>().countryNo] = playerNo; 
+				target.GetComponent<HexMesh> ().countryOwner = playerNo;
 			}
 			target = null;
 		}

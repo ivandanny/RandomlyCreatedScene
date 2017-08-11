@@ -10,6 +10,8 @@ public class GamePlay : MonoBehaviour {
 	private GameObject clickedCore = null;
 	private string tankName = "";
 
+	public Material[] countryMat;
+
 	public int[] countrySide = new int[1000];
 
 

@@ -12,8 +12,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 16;
-	public static int gridRow = 16;
+	public static int gridColumn = 26;
+	public static int gridRow = 26;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
