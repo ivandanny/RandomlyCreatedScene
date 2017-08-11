@@ -11,6 +11,7 @@ public class CoreScript : MonoBehaviour {
 	public int playerNo;
 	public bool isSpawn = false;
 	public GameObject target = null;
+	private GameObject gameplayObj;
 
 	// Use this for initialization
 	void Start () {
@@ -19,6 +20,10 @@ public class CoreScript : MonoBehaviour {
 		int y = hexGrid.selectedIslands [randomStart].XPos;
 		Debug.Log (x +"    " + y);
 		transform.position = new Vector3 ((x + y * 0.5f - y / 2) * (HexMetrics.innerRadius * 2f),6.0f,(y*(HexMetrics.outerRadius*1.5f)));
+
+		gameplayObj = GameObject.FindGameObjectWithTag ("GameController");
+
+		gameplayObj.GetComponent<GamePlay>().countrySide[hexGrid.GetComponent<HexGrid> ().landList [y, x]] = playerNo;
 
 	}
 

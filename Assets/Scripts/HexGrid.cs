@@ -12,8 +12,8 @@ public class HexGrid : MonoBehaviour {
 	public HexMesh hexMesh;
 
 	//Grid Function Variable
-	public static int gridColumn = 20;
-	public static int gridRow = 20;
+	public static int gridColumn = 16;
+	public static int gridRow = 16;
 
 	//Perlin Funcion Variable
 	public int[,] gridList = new int[gridRow,gridColumn];
@@ -46,7 +46,7 @@ public class HexGrid : MonoBehaviour {
 	public List<Islands> islands = new List <Islands> () ;
 
 	int landCounter = 0;
-	int[,] landList = new int[gridRow, gridColumn];
+	public int[,] landList = new int[gridRow, gridColumn];
 
 	public class SelectedIslands {
 		public int XPos;
@@ -323,7 +323,6 @@ public class HexGrid : MonoBehaviour {
 
 	}
 
-// !!!!!!
 	void labelCountry (int row, int column, int size, int mark, int no) {
 		if (landList[row,column] != 0 || no >= size || gridList[row,column] != 1){
 			return;

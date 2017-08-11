@@ -10,6 +10,8 @@ public class GamePlay : MonoBehaviour {
 	private GameObject clickedCore = null;
 	private string tankName = "";
 
+	public int[] countrySide = new int[1000];
+
 
 	void Update () {
 		if (Input.GetMouseButton(0)) {

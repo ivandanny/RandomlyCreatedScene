@@ -5,6 +5,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class HexMesh : MonoBehaviour {
 	public int countryNo = 0;
+	public int countryOwner = 0;
 
 	
 	Mesh hexMesh;
@@ -12,7 +13,7 @@ public class HexMesh : MonoBehaviour {
 	List<int> triangles;
 
 	public GameObject particleGlow;
-	public GameObject gameplayObj;
+	private GameObject gameplayObj;
 
 	MeshCollider meshCollider;
 	
@@ -31,7 +32,6 @@ public class HexMesh : MonoBehaviour {
 		hexMesh.vertices = vertices.ToArray();
 		hexMesh.triangles = triangles.ToArray();
 		hexMesh.RecalculateNormals();
-
 		meshCollider.sharedMesh = hexMesh;
 	}
 
@@ -66,5 +66,8 @@ public class HexMesh : MonoBehaviour {
 			particleGlow.SetActive (true);
 		} else
 			particleGlow.SetActive (false);
+		if (gameplayObj.GetComponent<GamePlay> ().countrySide [countryNo] != countryOwner) {
+			
+		}
 	}
 }

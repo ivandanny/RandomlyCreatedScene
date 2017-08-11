@@ -11,6 +11,7 @@ public class TankScript : MonoBehaviour {
 	public bool onCombat = false;
 	public int attack;
 	public GameObject enemy = null;
+	private GameObject gameplayObj;
 
 	public HitScript hitScript;
 	public float speed;
@@ -20,6 +21,9 @@ public class TankScript : MonoBehaviour {
 		float step = speed * Time.deltaTime;
 		transform.position = Vector3.MoveTowards(transform.position, new Vector3 (target.transform.position.x, 5.0f, target.transform.position.z), step);
 		if ((Mathf.Abs (transform.position.x - target.transform.position.x) < .003f) && (Mathf.Abs (transform.position.z - target.transform.position.z)) < .003f) {
+			if (target.GetComponent<HexMesh> ().countryOwner != playerNo) {
+				gameplayObj.GetComponent<GamePlay> ().countrySide [target.GetComponent<HexMesh>().countryNo] = playerNo; 
+			}
 			target = null;
 		}
 	}
@@ -27,6 +31,7 @@ public class TankScript : MonoBehaviour {
 
 	void Start () {
 		attack = Random.Range (1, 6);
+		gameplayObj = GameObject.FindGameObjectWithTag ("GameController");
 	}
 	// Update is called once per frame
 	void Update () {
