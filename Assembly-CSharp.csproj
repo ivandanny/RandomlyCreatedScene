@@ -53,6 +53,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CamScript.cs" />
      <Compile Include="Assets\Scripts\CoreScript.cs" />
+     <Compile Include="Assets\Scripts\DiceRoll.cs" />
      <Compile Include="Assets\Scripts\GamePlay.cs" />
      <Compile Include="Assets\Scripts\HexCell.cs" />
      <Compile Include="Assets\Scripts\HexGrid.cs" />
