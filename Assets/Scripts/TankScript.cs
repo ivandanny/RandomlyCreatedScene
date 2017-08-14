@@ -17,13 +17,21 @@ public class TankScript : MonoBehaviour {
 	public float speed;
 
 	public void TankMoveTo(GameObject target) {
-		//transform.position = Vector3.Lerp (transform.position, new Vector3 (target.transform.position.x, 5.0f, target.transform.position.z), Time.deltaTime);
+
+		int targetOwner = target.GetComponent<HexMesh> ().countryOwner;
+
 		float step = speed * Time.deltaTime;
 		transform.position = Vector3.MoveTowards(transform.position, new Vector3 (target.transform.position.x, 5.0f, target.transform.position.z), step);
 		if ((Mathf.Abs (transform.position.x - target.transform.position.x) < .003f) && (Mathf.Abs (transform.position.z - target.transform.position.z)) < .003f) {
-			if (target.GetComponent<HexMesh> ().countryOwner != playerNo) {
-				gameplayObj.GetComponent<GamePlay> ().countrySide [target.GetComponent<HexMesh>().countryNo] = playerNo; 
-				target.GetComponent<HexMesh> ().countryOwner = playerNo;
+
+			//Check whether the Owner of that Cell is the same with this tank or not
+			if (targetOwner == 0 ) {
+				gameplayObj.GetComponent<GamePlay> ().countrySide [target.GetComponent<HexMesh> ().countryNo] = playerNo; 
+				targetOwner = playerNo;
+			} else {
+				if (targetOwner != 0) {
+					// !Task {When Tank gets into the other countries, if the border is empty then takeover, else is war}
+				}
 			}
 			target = null;
 		}

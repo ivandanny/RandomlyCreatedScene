@@ -32,6 +32,14 @@ public class GamePlay : MonoBehaviour {
 			clickedCore = hit.collider.gameObject;
 		}
 	}
+		
+	public void AttackP1() {
+		Debug.Log ("Success");
+	}
+
+	public void AttackP2() {
+		Debug.Log ("Success2");
+	}
 
 	void HandleInput () {
 		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);

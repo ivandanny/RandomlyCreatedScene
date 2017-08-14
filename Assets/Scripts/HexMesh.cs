@@ -6,14 +6,13 @@ using System.Collections.Generic;
 public class HexMesh : MonoBehaviour {
 	public int countryNo = 0;
 	public int countryOwner = 0;
-
 	
 	Mesh hexMesh;
 	List<Vector3> vertices;
 	List<int> triangles;
 
 	public GameObject particleGlow;
-	private GameObject gameplayObj;
+	private GameObject gameplayManager;
 
 	MeshCollider meshCollider;
 	
@@ -56,21 +55,21 @@ public class HexMesh : MonoBehaviour {
 	}
 
 	void Start () {
-		gameplayObj = GameObject.FindGameObjectWithTag ("GameController");
+		gameplayManager = GameObject.FindGameObjectWithTag ("GameController");
 		particleGlow.SetActive (false);
 		Triangulate ();
 	}
 
 	void Update () {
-		if (countryNo == gameplayObj.GetComponent<GamePlay> ().currentCountry) {
+		if (countryNo == gameplayManager.GetComponent<GamePlay> ().currentCountry) {
 			particleGlow.SetActive (true);
 		} else
 			particleGlow.SetActive (false);
-		if (this.GetComponent<Renderer> ().material != gameplayObj.GetComponent<GamePlay> ().countryMat [countryOwner] && countryOwner != 0) {
-				this.GetComponent<Renderer> ().material = gameplayObj.GetComponent<GamePlay> ().countryMat [countryOwner-1];
+		if (this.GetComponent<Renderer> ().material != gameplayManager.GetComponent<GamePlay> ().countryMat [countryOwner] && countryOwner != 0) {
+				this.GetComponent<Renderer> ().material = gameplayManager.GetComponent<GamePlay> ().countryMat [countryOwner-1];
 		}
-		if (countryOwner != gameplayObj.GetComponent<GamePlay> ().countrySide [countryNo]) {
-			countryOwner = gameplayObj.GetComponent<GamePlay> ().countrySide [countryNo];
+		if (countryOwner != gameplayManager.GetComponent<GamePlay> ().countrySide [countryNo]) {
+			countryOwner = gameplayManager.GetComponent<GamePlay> ().countrySide [countryNo];
 		}
 	}
 }
