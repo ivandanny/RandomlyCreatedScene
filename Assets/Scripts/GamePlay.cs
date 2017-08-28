@@ -14,10 +14,21 @@ public class GamePlay : MonoBehaviour {
 
 	public int[] countrySide = new int[1000];
 
+	public GameObject dice1;
+	public GameObject dice2;
+	public GameObject tank1;
+	public GameObject tank2;
+	public bool fight = false;
 
 	void Update () {
-		if (Input.GetMouseButton(0)) {
+		if (Input.GetMouseButton(0) && fight == false) {
 			HandleInput();
+		}
+		if (fight == true) {
+			dice1.transform.parent.gameObject.SetActive (true);
+			dice1.gameObject.SetActive (true);
+			dice2.transform.parent.gameObject.SetActive (true);
+			dice2.gameObject.SetActive (true);
 		}
 	}
 		
@@ -34,11 +45,15 @@ public class GamePlay : MonoBehaviour {
 	}
 		
 	public void AttackP1() {
-		Debug.Log ("Success");
+		int dicevalue = int.Parse(dice1.GetComponent<DiceRoll> ().diceValue.text);
+		dice1.GetComponent<DiceRoll> ().isClicked = true;
+		Debug.Log (dicevalue);
 	}
 
 	public void AttackP2() {
-		Debug.Log ("Success2");
+		int dicevalue2 = int.Parse(dice2.GetComponent<DiceRoll> ().diceValue.text);
+		dice2.GetComponent<DiceRoll> ().isClicked = true;
+		Debug.Log (dicevalue2);
 	}
 
 	void HandleInput () {

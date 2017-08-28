@@ -18,11 +18,8 @@ public class CoreScript : MonoBehaviour {
 		randomStart = Random.Range (0, hexGrid.selectedIslands.Count);
 		int x = hexGrid.selectedIslands [randomStart].YPos;
 		int y = hexGrid.selectedIslands [randomStart].XPos;
-		Debug.Log (x +"    " + y);
 		transform.position = new Vector3 ((x + y * 0.5f - y / 2) * (HexMetrics.innerRadius * 2f),6.0f,(y*(HexMetrics.outerRadius*1.5f)));
-
 		gameplayObj = GameObject.FindGameObjectWithTag ("GameController");
-
 		gameplayObj.GetComponent<GamePlay>().countrySide[hexGrid.GetComponent<HexGrid> ().landList [y, x]] = playerNo;
 
 	}

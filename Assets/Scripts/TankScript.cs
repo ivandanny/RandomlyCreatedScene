@@ -71,10 +71,15 @@ public class TankScript : MonoBehaviour {
 	void OnCollisionEnter (Collision collision) {
 		if (collision.gameObject != null) {
 			if (collision.gameObject.tag == "Tank" && collision.gameObject.GetComponent<TankScript> ().playerNo < playerNo) {
+// On Hit, then set the dice active
+				gameplayObj.GetComponent<GamePlay> ().fight = true;
+				gameplayObj.GetComponent<GamePlay> ().tank1 = this.gameObject;
+				gameplayObj.GetComponent<GamePlay> ().tank2 = collision.gameObject;
+				/*
 				HitScript particle = Instantiate <HitScript> (hitScript);
 				particle.transform.position = transform.position;
 				enemy = collision.gameObject;
-				onCombat = true;
+				onCombat = true;*/
 			}
 		}
 	}
