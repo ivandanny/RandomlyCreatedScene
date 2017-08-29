@@ -19,6 +19,7 @@ public class GamePlay : MonoBehaviour {
 	public GameObject tank1;
 	public GameObject tank2;
 	public bool fight = false;
+	private int diceClick = 0;
 
 	void Update () {
 		if (Input.GetMouseButton(0) && fight == false) {
@@ -44,17 +45,51 @@ public class GamePlay : MonoBehaviour {
 		}
 	}
 		
+
+	// Combat Code
+
+	public void CombatPhase(GameObject dice){
+		if (dice.GetComponent<DiceRoll> ().isClicked == false) {
+			dice.GetComponent<DiceRoll> ().isClicked = true;
+			diceClick += 1;
+			if (diceClick == 2) {
+				int dicevalue1 = int.Parse (dice1.GetComponent<DiceRoll> ().diceValue.text);
+				int dicevalue2 = int.Parse (dice2.GetComponent<DiceRoll> ().diceValue.text);
+
+				//Destroying tanks
+				if (dicevalue1 > dicevalue2) {
+					tank2.GetComponent<TankScript> ().killed ();
+				} else {
+					if (dicevalue2 > dicevalue1) { 
+						tank1.GetComponent<TankScript> ().killed ();
+					} else {
+						tank1.GetComponent<TankScript> ().killed ();
+						tank2.GetComponent<TankScript> ().killed ();
+					}
+				}
+				fight = false;
+				dice1.GetComponent <DiceRoll> ().isClicked = false;
+				dice2.GetComponent <DiceRoll> ().isClicked = false;
+
+				//Should add some delay
+				dice1.transform.parent.gameObject.SetActive (false);
+				dice1.gameObject.SetActive (false);
+				dice2.transform.parent.gameObject.SetActive (false);
+				dice2.gameObject.SetActive (false);
+			}
+		}
+	}
+
 	public void AttackP1() {
-		int dicevalue = int.Parse(dice1.GetComponent<DiceRoll> ().diceValue.text);
-		dice1.GetComponent<DiceRoll> ().isClicked = true;
-		Debug.Log (dicevalue);
+		CombatPhase (dice1);
 	}
 
 	public void AttackP2() {
-		int dicevalue2 = int.Parse(dice2.GetComponent<DiceRoll> ().diceValue.text);
-		dice2.GetComponent<DiceRoll> ().isClicked = true;
-		Debug.Log (dicevalue2);
+		CombatPhase (dice2);
 	}
+
+
+
 
 	void HandleInput () {
 		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);

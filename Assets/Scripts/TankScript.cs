@@ -44,7 +44,7 @@ public class TankScript : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		if (moveTo != null && onCombat == false) {
+		if (moveTo != null && onCombat == false && gameplayObj.GetComponent<GamePlay> ().fight != true) {
 			TankMoveTo (moveTo);
 		}
 
@@ -68,6 +68,12 @@ public class TankScript : MonoBehaviour {
 		}
 	}
 
+	public void killed () {
+		HitScript particle = Instantiate <HitScript> (hitScript);
+		particle.transform.position = transform.position;
+		Destroy (this.gameObject);
+	}
+
 	void OnCollisionEnter (Collision collision) {
 		if (collision.gameObject != null) {
 			if (collision.gameObject.tag == "Tank" && collision.gameObject.GetComponent<TankScript> ().playerNo < playerNo) {
@@ -75,11 +81,6 @@ public class TankScript : MonoBehaviour {
 				gameplayObj.GetComponent<GamePlay> ().fight = true;
 				gameplayObj.GetComponent<GamePlay> ().tank1 = this.gameObject;
 				gameplayObj.GetComponent<GamePlay> ().tank2 = collision.gameObject;
-				/*
-				HitScript particle = Instantiate <HitScript> (hitScript);
-				particle.transform.position = transform.position;
-				enemy = collision.gameObject;
-				onCombat = true;*/
 			}
 		}
 	}
